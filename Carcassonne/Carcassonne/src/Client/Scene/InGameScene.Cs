@@ -1,26 +1,26 @@
 ﻿//====================================================================================================
-// CardBase.Cs
+// InGame.Cs
 // Copyright (C) 2024~ Neeko_onTheRoad
 //----------------------------------------------------------------------------------------------------
 // CC BY-NC
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-
+using SFML.System;
 
 namespace nk.Carcassonne {
+	public class InGameScene() : SceneBase() {
 
-	public enum SideType {
-		NON, LAKE, ROAD, CASTLE
-	}
+		public List<Player>                   Players { get; protected set; } = [];
+		public Dictionary<Vector2i, TileBase> Cards   { get; protected set; } = [];
 
-	public class CardBase() {
+		public override void Initialize(Vector2i _windowSize) {
+			
+		}
 
-		public bool StartCard { get; protected set; } = false;
-		
-		public ChargeInfo Charge { get; protected set; } = new();
-
-		public VectorDirection4<SideType> 
+		public override void Update(ClientTime _clientTime) {
+			
+		}
 
 	}
 }

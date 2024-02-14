@@ -1,5 +1,5 @@
 ﻿//====================================================================================================
-// Player.Cs
+// SceneBase.Cs
 // Copyright (C) 2024~ Neeko_onTheRoad
 //----------------------------------------------------------------------------------------------------
 // CC BY-NC
@@ -7,17 +7,21 @@
 //====================================================================================================
 
 using SFML.Graphics;
+using SFML.System;
 
 namespace nk.Carcassonne {
-	public class Player {
+	public abstract class SceneBase() : Drawable {
 
-		public uint   Score { get; set; } = 0u;
+		public SpriteUnion Sprites { get; protected set; } = [];
+		
+		public abstract void Initialize(Vector2i _windowSize);
+		public abstract void Update(ClientTime _clientTime);
 
-		public byte   Code  { get; protected set; } = 0;
-		public string Name  { get; protected set; } = "Unnamed";
-		public Color  Color { get; protected set; } = new();
-
-
+		void Drawable.Draw(RenderTarget _target, RenderStates _state) {
+			Sprites.ForEach((i) => {
+				_target.Draw(i, _state);
+			});
+		}
 
 	}
 }

@@ -1,5 +1,5 @@
 ﻿//====================================================================================================
-// Program.Cs
+// Meeple.Cs
 // Copyright (C) 2024~ Neeko_onTheRoad
 //----------------------------------------------------------------------------------------------------
 // CC BY-NC
@@ -7,10 +7,13 @@
 //====================================================================================================
 
 namespace nk.Carcassonne {
-	public static class Program {
-		public static void Main() {
-			WindowBase carcassonne = new("Carcassonne", "V 0.0.1");
-			carcassonne.Run();
-		}
+	public struct Meeples() {
+
+		public byte Small   { get; set; } = 8;
+		public bool Large   { get; set; } = true;
+		public bool Monk    { get; set; } = true;
+		public bool Builder { get; set; } = true;
+		public bool Pig     { get; set; } = true;
+
 	}
 }

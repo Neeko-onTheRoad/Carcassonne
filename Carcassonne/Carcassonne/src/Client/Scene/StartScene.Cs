@@ -1,5 +1,5 @@
 ﻿//====================================================================================================
-// ChargeInfo.Cs
+// StartScreen.Cs
 // Copyright (C) 2024~ Neeko_onTheRoad
 //----------------------------------------------------------------------------------------------------
 // CC BY-NC
@@ -9,20 +9,18 @@
 using SFML.System;
 
 namespace nk.Carcassonne {
-	public class ChargeInfo() {
+	public class StartScene() : SceneBase() {
 
-		public bool     Exist    { get; private set; } = false;
-		public Vector2f Position { get; private set; } = new(0f, 0f);
-		
-		public Player?                Owner      { get; set; } = new();
-		public VectorDirection8<bool> NearbyCard { get; set; } = new();
+		public override void Initialize(Vector2i _windowSize) {
+            using (RoundedRectangle connectButton = new() {
+				Position = new(),
+			})
+			Sprites.Add(connectButton);
+        }
 
-		public byte Withdrawal() {
-			byte Point = 0;
-			foreach (var i in NearbyCard) Point += (i ? (byte)1 : (byte)0);
+		public override void Update(ClientTime _clientTime) {
 
-			Owner = null;
-			return Point;
 		}
+
 	}
 }
