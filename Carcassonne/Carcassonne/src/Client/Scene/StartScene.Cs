@@ -54,9 +54,7 @@ namespace nk.Carcassonne {
 				Size         = new(_window.WindowSize.X * 0.145f,  _window.WindowSize.X * 0.05f),
 				Radius       = _window.WindowSize.X * 0.01f,
 				TextElement  = new("Exit", Fonts.Normal, (uint)(_window.WindowSize.X * 0.025f)),
-				OnClickEvent = () => {
-					
-				}
+				OnClickEvent =  _window.Window.Close
 			};
 			Sprites.Add(exitButton);
         }

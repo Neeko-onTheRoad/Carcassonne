@@ -69,7 +69,6 @@ namespace nk.Carcassonne {
 			ContextSettings setting = new() { AntialiasingLevel = 1 };
 
 			window = new RenderWindow(new VideoMode(WindowSize.X, WindowSize.Y), WindowTitle, style, setting);
-			Window.Closed += (object? _sender, EventArgs _event) => Window.Close();
 
 			ChangeScene(NowScene);
 		}
