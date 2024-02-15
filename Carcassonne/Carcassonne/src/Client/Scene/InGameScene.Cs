@@ -7,6 +7,7 @@
 //====================================================================================================
 
 using SFML.System;
+using SFML.Graphics;
 
 namespace nk.Carcassonne {
 	public class InGameScene() : SceneBase() {
@@ -14,7 +15,7 @@ namespace nk.Carcassonne {
 		public List<Player>                   Players { get; protected set; } = [];
 		public Dictionary<Vector2i, TileBase> Cards   { get; protected set; } = [];
 
-		public override void Initialize(Vector2i _windowSize) {
+		public override void Initialize(WindowBase _window) {
 			
 		}
 

@@ -28,13 +28,12 @@ namespace nk.Carcassonne {
 		private RenderWindow window = new(new(0, 0), "");
 		public  RenderWindow Window { get{ return window; } protected set { window = value; } }
 
-		public Vector2i   MousePosition { get; protected set; } = new(0, 0);
-		public Vector2u   WindowSize    { get; protected set; } = new(0, 0);
-		public SceneBase  NowScene      { get; protected set; } = new StartScene();
-		public ClientTime ClientTime    { get; protected set; } = new();
+		public Vector2u   WindowSize { get; protected set; } = new(0, 0);
+		public SceneBase  NowScene   { get; protected set; } = new StartScene();
+		public ClientTime ClientTime { get; protected set; } = new();
 		
-		public object? Clicking { get; protected set; } = null;
-		public object? Hovering { get; protected set; } = null;
+		public object? Clicking { get; set; } = null;
+		public object? Hovering { get; set; } = null;
 
 		//====================================================================================================| Constructors
 
@@ -51,24 +50,11 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Functions
 
-		//============================================================| IsHovering
+		//============================================================| Change Scene
 
-		protected bool IsHovering(Shape _object) {
-			return _object.GetGlobalBounds().Contains(
-				MousePosition.X, MousePosition.Y
-			);
-		}
-
-		protected bool IsHovering(Sprite _object) {
-			return _object.GetGlobalBounds().Contains(
-				MousePosition.X, MousePosition.Y
-			);
-		}
-
-
-		//============================================================| LoadAll
-
-		private void LoadAll() {
+		public void ChangeScene(SceneBase _scene) {
+			NowScene = _scene;
+			NowScene.Initialize(this);
 		}
 
 		//============================================================| CreateNewWindow
@@ -85,14 +71,14 @@ namespace nk.Carcassonne {
 			window = new RenderWindow(new VideoMode(WindowSize.X, WindowSize.Y), WindowTitle, style, setting);
 			Window.Closed += (object? _sender, EventArgs _event) => Window.Close();
 
-			NowScene.Initialize();
+			ChangeScene(NowScene);
 		}
 
 		//============================================================| Run
 
 		public void Run() {
-			LoadAll();
 			CreateNewWindow(WindowSize);
+			MouseListener.Initialize(this);
 
 			float totalTimeBeforUpdate = 0f;
 			float previousTimeElapsed  = 0f;
@@ -124,6 +110,31 @@ namespace nk.Carcassonne {
 				}
 			}
 		}
+	}
 
+	public static class MouseListener {
+
+		public static Vector2i Position { get; private set; } = new(0, 0);
+		public static void Initialize(WindowBase _window) {
+			_window.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
+				Position = new(
+					_event.X,
+					_event.Y
+				);
+			};
+		}
+
+		//============================================================| IsHovering
+
+		public static bool IsHovering(Shape _object) {
+            return _object.GetGlobalBounds().Contains(
+				Position.X, Position.Y
+			);
+		}
+		public static bool IsHovering(Sprite _object) {
+			return _object.GetGlobalBounds().Contains(
+				Position.X, Position.Y
+			);
+		}
 	}
 }

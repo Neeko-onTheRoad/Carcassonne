@@ -20,4 +20,10 @@
     <Folder Include="Carcassonne\res\Cards\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Carcassonne\res\Client\Fonts\NanumMyeongjoExtraBold.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
