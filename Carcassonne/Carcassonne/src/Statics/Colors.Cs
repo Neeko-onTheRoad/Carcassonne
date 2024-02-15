@@ -10,7 +10,7 @@ using SFML.Graphics;
 
 namespace nk.Carcassonne {
 	public class Colors {
-		public readonly static Color Button_Relesed = new(120, 108, 198);
-		public readonly static Color Button_Pressed = new(101, 53,  136);
+		public readonly static Color LightPurple = new(120, 108, 198);
+		public readonly static Color Purple      = new(101, 53,  136);
 	}
 }

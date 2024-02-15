@@ -37,7 +37,7 @@ namespace nk {
 			return Contains(MouseListener.Position.X, MouseListener.Position.Y);
 		}
 
-		private ushort pointCount = 5;
+		private ushort pointCount = 2;
 		public  ushort PointCount {
 			get => pointCount;
 			set {
@@ -74,7 +74,7 @@ namespace nk {
 		}
 
 		private void Rerender() {
-			vertexs = new(PrimitiveType.TriangleFan, 8u + (4u * PointCount));
+            vertexs = new(PrimitiveType.TriangleFan, 8u + (4u * PointCount));
 
 			vertexs[0] = new(new(
 				Position.X + Radius,

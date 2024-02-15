@@ -10,6 +10,6 @@ using SFML.Graphics;
 
 namespace nk.Carcassonne {
 	public static class Fonts {
-		public static readonly Font Normal = new(@"Carcassonne\res\Client\Fonts\NanumMyeongjoExtraBold.ttf");
+		public static readonly Font Normal = new(@"Carcassonne\res\Client\Fonts\SCDream4.otf");
 	}
 }

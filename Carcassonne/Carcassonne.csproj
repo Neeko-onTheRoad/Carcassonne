@@ -24,6 +24,9 @@
     <None Update="Carcassonne\res\Client\Fonts\NanumMyeongjoExtraBold.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Carcassonne\res\Client\Fonts\SCDream4.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

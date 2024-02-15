@@ -21,7 +21,7 @@ namespace nk.Carcassonne {
 		
 		public string WindowTitle     { get; protected set; } = "Carccasson";
 		public string ClientVersion   { get; protected set; } = "V Error";
-		public int    TargetFPS       { get; protected set; } = 0;
+		public int    TargetFPS       { get; protected set; } = 144;
 		public float  TimeUntilUpdate { get; protected set; } = 1f;
 		public float  DeltaTime       { get; protected set; } = 0f;
 		
@@ -80,6 +80,7 @@ namespace nk.Carcassonne {
 			CreateNewWindow(WindowSize);
 			MouseListener.Initialize(this);
 
+			TimeUntilUpdate = 1f / TargetFPS;
 			float totalTimeBeforUpdate = 0f;
 			float previousTimeElapsed  = 0f;
 			float deltaTime;
@@ -88,15 +89,14 @@ namespace nk.Carcassonne {
 			Clock clock = new();
 
 			while(Window.IsOpen) {
-				
 				totalTimeElapsed    = clock.ElapsedTime.AsSeconds();
 				deltaTime           = totalTimeElapsed - previousTimeElapsed;
 				previousTimeElapsed = totalTimeElapsed;
 
-				totalTimeElapsed += deltaTime;
+				totalTimeBeforUpdate += deltaTime;
 				DeltaTime = deltaTime;
 
-				if (totalTimeElapsed >= TimeUntilUpdate) {
+				if (totalTimeBeforUpdate >= TimeUntilUpdate) {
 					Window.DispatchEvents();
 
 					ClientTime.Update(totalTimeBeforUpdate, clock.ElapsedTime.AsSeconds());
