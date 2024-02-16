@@ -6,23 +6,21 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using System.Windows.Forms;
-
 namespace nk {
-	public class StringTable {
+	public class StartSceneST {
+		public readonly string Connect = "Connect";
+		public readonly string Host    = "Host";
+		public readonly string Option  = "Option";
+		public readonly string Exit    = "Exit";
 
-		public StringTable(string _lang) {
-			string path = $"Carcassonne\\res\\Client\\StringTable_{_lang}.Json";
 
-			try {
-				using (FileStream fs = File.OpenRead(path)) {
-					
-				}
-			}
-			catch(FileNotFoundException ex) {
-				MessageBox.Show($"Language File: {path} isn't exist.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		public StartSceneST(string _lang) {
+			if (_lang == "ko") {
+				Connect = "접속";
+				Host    = "호스트";
+				Option  = "설정";
+				Exit    = "종료";
 			}
 		}
-
 	}
 }

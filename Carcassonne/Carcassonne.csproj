@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-	  <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -25,13 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Carcassonne\res\Client\StringTable.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Carcassonne\res\Client\Fonts\NanumMyeongjoExtraBold.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Carcassonne\res\Client\Fonts\SCDream4.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Carcassonne\res\Client\StringTable_en.Json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

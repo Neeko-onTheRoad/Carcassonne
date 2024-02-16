@@ -32,7 +32,7 @@ namespace nk.Carcassonne {
 		public SceneBase  NowScene   { get; protected set; } = new StartScene();
 		public ClientTime ClientTime { get; protected set; } = new();
 		
-		public string  Language { get; set; } = "en";
+		public string  Language { get; set; } = "ko";
 		public object? Clicking { get; set; } = null;
 		public object? Hovering { get; set; } = null;
 
