@@ -64,8 +64,8 @@ namespace nk {
 			}
 		}
 
-		private Color color = new(255, 255, 255);
-		public  Color Color {
+		private ColorSF color = new(255, 255, 255);
+		public  ColorSF Color {
 			get => color;
 			set {
 				color = value;

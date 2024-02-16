@@ -6,11 +6,23 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using SFML.Graphics;
+using System.Windows.Forms;
 
-namespace nk.Carcassonne {
-	public class Colors {
-		public readonly static ColorSF LightPurple = new(120, 108, 198);
-		public readonly static ColorSF Purple      = new(101, 53,  136);
+namespace nk {
+	public class StringTable {
+
+		public StringTable(string _lang) {
+			string path = $"Carcassonne\\res\\Client\\StringTable_{_lang}.Json";
+
+			try {
+				using (FileStream fs = File.OpenRead(path)) {
+					
+				}
+			}
+			catch(FileNotFoundException ex) {
+				MessageBox.Show($"Language File: {path} isn't exist.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
 	}
 }

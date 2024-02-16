@@ -11,10 +11,14 @@ using SFML.Graphics;
 namespace nk.Carcassonne {
 	public abstract class SceneBase() : Drawable {
 
-		public SpriteUnion Sprites { get; protected set; } = [];
+		public SpriteUnion              Sprites { get; protected set; } = [];
+		public List<Action<ClientTime>> Updates { get; protected set; } = [];
 		
 		public abstract void Initialize(WindowBase _window);
-		public abstract void Update(ClientTime _clientTime);
+
+		public void Update(ClientTime _clientTime) {
+			Updates.ForEach(i => i(_clientTime));
+		}
 
 		void Drawable.Draw(RenderTarget _target, RenderStates _state) {
 			Sprites.ForEach((i) => {

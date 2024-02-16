@@ -6,8 +6,6 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using SFML.Graphics;
-
-namespace nk.Carcassonne {
-	public class SpriteUnion : List<Drawable>;
-}
+global using ColorSF     = SFML.Graphics.Color;
+global using SpriteUnion = System.Collections.Generic.List<SFML.Graphics.Drawable>;
+global using FontSF      = SFML.Graphics.Font;

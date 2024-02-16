@@ -13,8 +13,32 @@ namespace nk.Carcassonne {
 	public class StartScene() : SceneBase() {
 
 		public override void Initialize(WindowBase _window) {
+
+			StringTable st = new(_window.Language);
 			
 			//====================================================================================================| Make Shapes
+
+			//====================================================================================| Title
+
+			Text title = new() {
+				CharacterSize   = (uint)(_window.WindowSize.X * 0.075f),
+				Font            = Fonts.Normal,
+				Position        = new(_window.WindowSize.X * 0.05f, _window.WindowSize.X * 0.05f),
+				FillColor       = new(255, 255, 255),
+				DisplayedString = "Not Carcassonne"
+			};
+			Sprites.Add(title);
+
+			Text comment = new() {
+				CharacterSize   = (uint)(_window.WindowSize.X * 0.075f),
+				Font            = Fonts.Normal,
+				Position        = new(_window.WindowSize.X * 0.05f, _window.WindowSize.X * 0.05f),
+				FillColor       = new(255, 255, 255),
+				DisplayedString = "Not Carcassonne"
+			};
+			Sprites.Add(title);
+
+			//====================================================================================| Buttons
 
 			Button connectButton = new(_window) {
 				Position     = new(_window.WindowSize.X * 0.05f, _window.WindowSize.Y * 0.6f),
@@ -58,9 +82,6 @@ namespace nk.Carcassonne {
 			};
 			Sprites.Add(exitButton);
         }
-
-		public override void Update(ClientTime _clientTime) {
-		}
 
 	}
 }

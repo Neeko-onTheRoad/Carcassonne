@@ -32,6 +32,7 @@ namespace nk.Carcassonne {
 		public SceneBase  NowScene   { get; protected set; } = new StartScene();
 		public ClientTime ClientTime { get; protected set; } = new();
 		
+		public string  Language { get; set; } = "en";
 		public object? Clicking { get; set; } = null;
 		public object? Hovering { get; set; } = null;
 
@@ -103,7 +104,7 @@ namespace nk.Carcassonne {
 
 					NowScene.Update(ClientTime);
 
-					Window.Clear(Color.Black);
+					Window.Clear(new(0, 0, 0));
 					Window.Draw(NowScene);
 					Window.Display();
 				}

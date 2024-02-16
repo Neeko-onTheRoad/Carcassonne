@@ -12,7 +12,6 @@ namespace nk.Carcassonne {
 	public class EmptyScene() : SceneBase() {
 
 		public override void Initialize(WindowBase _window) {}
-		public override void Update(ClientTime _clientTime) {}
 
 	}
 }

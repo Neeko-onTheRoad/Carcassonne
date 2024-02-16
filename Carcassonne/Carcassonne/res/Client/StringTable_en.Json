@@ -1,0 +1,14 @@
+{
+	"Client.StartScene.Connect": "Connect",
+	"Client.StartScene.Host": "Host",
+	"Client.StartScene.Option": "Option",
+	"Client.StartScene.Exit": "Exit",
+
+	"Client.StartScene.Comments": [
+		"It's free!",
+		"Goofy ahh",
+		"Neeko!"
+	]
+
+
+}
