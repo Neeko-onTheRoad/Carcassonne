@@ -11,7 +11,7 @@ using SFML.System;
 using SFML.Window;
 
 namespace nk.Carcassonne {
-	public class WindowTab : IMultyDrawableObject {
+	public class WindowTab : IMultyDrawableObject, IDragable {
 
 		//====================================================================================================| Members
 
@@ -25,6 +25,9 @@ namespace nk.Carcassonne {
 		private ColorSF  backgroundColor = Colors.TransparentBlack;
 		private Vector2f size            = new(100f, 100f);
 		private Vector2f position        = new(0f, 0f);
+
+		public bool     Draging      { get; set; } = false;
+		public Vector2f DragStartPos { get; set; } = new(0f, 0f);
 
 		public List<IDrawableObject> Objects      { get; set; } = [];
 		public List<IDrawableObject> AddedObjects { get; set; } = [];
@@ -100,13 +103,15 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Constructor
 
-		private bool BorderHovered = false;
-		private bool BorderRelesed = false;
+		private bool BorderHovered  = false;
+		private bool BorderRelesed  = false;
+
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
 
 		public WindowTab() {
+			
             MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
@@ -115,27 +120,38 @@ namespace nk.Carcassonne {
 
 				if (BorderHovered) {
 					if (Movement) BorderColor = Colors.Purple;
-
-					BorderHovered = false;
+					BorderHovered  = false;
 				}
 				if (BorderRelesed) {
-                    if (Movement) BorderColor = Colors.LightPurple;
-
-					BorderRelesed = false;
+					if (Movement) BorderColor = Colors.LightPurple;
+					BorderRelesed  = false;
 				}
+
+                if (Draging && Movement) {
+                    Position = DragStartPos + (Vector2f)MouseListener.DragDelta;
+					BorderColor = Colors.Purple;
+                }
             };
 
 			MouseButtonPressedEvent = (_sender, _event) => {
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
-					if (WindowBase.Hovering == this) {
-						
+                    if (WindowBase.Hovering == TitleBar) {
+						DragStartPos = Position;
+						Draging = true;
+						WindowBase.Clicking = TitleBar;
 					}
 				}
 			};
 
 			MouseButtonReleasedEvent = (_sender, _event) => {
 				if (!Show) return;
+				if (_event.Button == Mouse.Button.Left) {
+					Draging = false;
+                    if (WindowBase.Clicking == TitleBar) {
+						WindowBase.Clicking = null;
+					}
+				}
 			};
 
 			WindowBase.Window.MouseMoved          += MouseMovedEvent;

@@ -15,8 +15,8 @@ namespace nk.Carcassonne {
 
 		public readonly string Comment;
 		private readonly string[] Comments = [
-			"It's free!", "How to make a nuclear bomb", "I need AK-47", "Hello, World!", "Fuck you",
-			"Click here to Get 1M robux", "dltmddlrehowl"
+			"It's free!", "How to make a nuclear bomb", "I need AK-47", "Hello, World!",
+			"Click here to Get 1M robux", "Don't play Valorant", "Josh Hutcherson - Whistle"
 		];
 
 		public StartSceneST(string _lang) {

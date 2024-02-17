@@ -93,6 +93,7 @@ namespace nk.Carcassonne {
 			Clock clock = new();
 
 			while(Window.IsOpen) {
+
 				totalTimeElapsed    = clock.ElapsedTime.AsSeconds();
 				deltaTime           = totalTimeElapsed - previousTimeElapsed;
 				previousTimeElapsed = totalTimeElapsed;
@@ -101,23 +102,24 @@ namespace nk.Carcassonne {
 				DeltaTime = deltaTime;
 
 				if (totalTimeBeforUpdate >= TimeUntilUpdate) {
-					foreach (var i in NowScene.ObjectsRV) {
+
+                    foreach (var i in NowScene.ObjectsRV) {
                         if (i.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
                             if (i.GetType().GetInterfaces()[0] == typeof(IMultyDrawableObject)) {
 								foreach(var j in (i as IMultyDrawableObject ?? new WindowTab()).AddedObjects) {
 									if (j.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
                                         Hovering = j;
-										Console.WriteLine(totalTimeElapsed);
 										break;
 									}
 								}
+								break;
 							}
 							else {
 								Hovering = i;
 								break;
 							}
 						}
-						Hovering = null;
+						Hovering = null; 
 					}
 
                     Window.DispatchEvents();
@@ -137,13 +139,28 @@ namespace nk.Carcassonne {
 
 	public static class MouseListener {
 
-		public static Vector2i Position { get; private set; } = new(0, 0);
+		private static Vector2i CurruntPosition = new(0, 0);
+		
+		public static Vector2i DragStart { get; private set; } = new(0, 0);
+		public static Vector2i DragDelta { get; private set; } = new(0, 0);
+		public static Vector2i Delta     { get; private set; } = new(0, 0);
+		public static Vector2i Position  { get; private set; } = new(0, 0);
+
 		public static void Initialize() {
-			WindowBase.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
+			WindowBase.Window.MouseMoved += (_sender, _event) => {
+				CurruntPosition = Position;
+
 				Position = new(
 					_event.X,
 					_event.Y
 				);
+
+				Delta     = Position - CurruntPosition;
+				DragDelta = Position - DragStart;
+			};
+			WindowBase.Window.MouseButtonPressed += (_sender, _event) => {
+				DragDelta = new(0, 0);
+				DragStart = Position;
 			};
 		}
 

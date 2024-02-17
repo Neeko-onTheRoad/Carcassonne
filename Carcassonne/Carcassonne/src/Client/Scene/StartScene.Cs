@@ -7,7 +7,6 @@
 //====================================================================================================
 
 using SFML.System;
-using SFML.Graphics;
 
 namespace nk.Carcassonne {
 	public class StartScene() : SceneBase() {
@@ -117,7 +116,7 @@ namespace nk.Carcassonne {
 			//====================================================================================| Exit Buttons
 
 			WindowTab connectWindow = new() {
-				Size = new(460, 220),
+				Size     = new(460, 220),
 				Position = new(100, 100),
 				Movement = true
 			};
