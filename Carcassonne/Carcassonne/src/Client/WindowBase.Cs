@@ -12,35 +12,38 @@ using SFML.Graphics;
 
 using System.Runtime.InteropServices;
 
-
 namespace nk.Carcassonne {
 
-	public partial class WindowBase {
+	public static partial class WindowBase {
 
 		//====================================================================================================| Member Variables
 		
-		public string WindowTitle     { get; protected set; } = "Carccasson";
-		public string ClientVersion   { get; protected set; } = "V Error";
-		public int    TargetFPS       { get; protected set; } = 144;
-		public float  TimeUntilUpdate { get; protected set; } = 1f;
-		public float  DeltaTime       { get; protected set; } = 0f;
+		public static string WindowTitle     { get; private set; } = "Carccasson";
+		public static string ClientVersion   { get; private set; } = "V Error";
+		public static int    TargetFPS       { get; private set; } = 144;
+		public static float  TimeUntilUpdate { get; private set; } = 1f;
+		public static float  DeltaTime       { get; private set; } = 0f;
 		
-		private RenderWindow window = new(new(0, 0), "");
-		public  RenderWindow Window { get{ return window; } protected set { window = value; } }
+		public static RenderWindow Window { get; private set; } = new(new(0, 0), "");
 
-		public Vector2u   WindowSize { get; protected set; } = new(0, 0);
-		public SceneBase  NowScene   { get; protected set; } = new StartScene();
-		public ClientTime ClientTime { get; protected set; } = new();
-		
-		public string  Language { get; set; } = "ko";
-		public object? Clicking { get; set; } = null;
-		public object? Hovering { get; set; } = null;
+		public static Vector2u   WindowSize { get; private set; } = new(0, 0);
+		public static SceneBase  NowScene   { get; private set; } = new StartScene();
+		public static ClientTime ClientTime { get; private set; } = new();
+
+		public static Dictionary<Cursor.CursorType, Cursor> Cursors { get; private set; } = [];
+
+		public static string  Language { get; set; } = "ko";
+		public static object? Clicking { get; set; } = null;
+		public static object? Hovering { get; set; } = null;
 
 		//====================================================================================================| Constructors
 
-		public WindowBase(string _title, string _version) {
+		public static void Init(string _title, string _version) {
 			WindowTitle   = _title;
 			ClientVersion = _version;
+			
+			Cursors[Cursor.CursorType.Arrow] = new(Cursor.CursorType.Arrow);
+			Cursors[Cursor.CursorType.Hand]  = new(Cursor.CursorType.Hand);
 		}
 
 		//====================================================================================================| Dll Imports
@@ -53,14 +56,14 @@ namespace nk.Carcassonne {
 
 		//============================================================| Change Scene
 
-		public void ChangeScene(SceneBase _scene) {
+		public static void ChangeScene(SceneBase _scene) {
 			NowScene = _scene;
-			NowScene.Initialize(this);
+			NowScene.Initialize();
 		}
 
 		//============================================================| CreateNewWindow
 
-		protected void CreateNewWindow(Vector2u _size) {
+		private static void CreateNewWindow(Vector2u _size) {
 			Window.Close();
 
 			WindowSize = new(1600, 900);
@@ -69,16 +72,16 @@ namespace nk.Carcassonne {
 
 			ContextSettings setting = new() { AntialiasingLevel = 1 };
 
-			window = new RenderWindow(new VideoMode(WindowSize.X, WindowSize.Y), WindowTitle, style, setting);
+			Window = new RenderWindow(new VideoMode(WindowSize.X, WindowSize.Y), WindowTitle, style, setting);
 
 			ChangeScene(NowScene);
 		}
 
 		//============================================================| Run
 
-		public void Run() {
+		public static void Run() {
 			CreateNewWindow(WindowSize);
-			MouseListener.Initialize(this);
+			MouseListener.Initialize();
 
 			TimeUntilUpdate = 1f / TargetFPS;
 			float totalTimeBeforUpdate = 0f;
@@ -115,8 +118,8 @@ namespace nk.Carcassonne {
 	public static class MouseListener {
 
 		public static Vector2i Position { get; private set; } = new(0, 0);
-		public static void Initialize(WindowBase _window) {
-			_window.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
+		public static void Initialize() {
+			WindowBase.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
 				Position = new(
 					_event.X,
 					_event.Y

@@ -9,8 +9,8 @@
 namespace nk.Carcassonne {
 	public static class Program {
 		public static void Main() {
-			WindowBase carcassonne = new("Carcassonne", "V 0.0.1");
-			carcassonne.Run();
+			WindowBase.Init("Carcassonne", "V 0.0.1");
+			WindowBase.Run();
 		}
 	}
 }

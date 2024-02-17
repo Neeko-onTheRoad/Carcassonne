@@ -14,7 +14,7 @@ namespace nk.Carcassonne {
 		public SpriteUnion              Sprites { get; protected set; } = [];
 		public List<Action<ClientTime>> Updates { get; protected set; } = [];
 		
-		public abstract void Initialize(WindowBase _window);
+		public abstract void Initialize();
 
 		public void Update(ClientTime _clientTime) {
 			Updates.ForEach(i => i(_clientTime));
@@ -25,6 +25,8 @@ namespace nk.Carcassonne {
 				_target.Draw(i, _state);
 			});
 		}
+
+		
 
 	}
 }

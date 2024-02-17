@@ -6,9 +6,7 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using SFML.Graphics;
-
-namespace nk {
+namespace nk.Carcassonne {
 	public class TileTextures() : IDisposable {
 
 		void IDisposable.Dispose() {

@@ -26,35 +26,50 @@ namespace nk.Carcassonne {
 
 		public bool Show { get; set; } = true;
 
-		public Button(WindowBase _window) {
-			_window.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
-				if (_window.Hovering != this) {
-					if (Hovering()) {
-						_window.Hovering = this;
-						Color = Colors.Purple;
-					}
+		public  bool Hovering { get; protected set ; } = false;
+		private bool Hovered  = false;
+		private bool Relesed  = false;
+
+		public Button() {
+			WindowBase.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
+				if (!Show) return;
+				if (GetHovering()) {
+					Hovering = true;
+
+					WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Hand]);
+					WindowBase.Hovering = this;
+					Color = Colors.Purple;
 				}
-				if (!Hovering()) {
-					_window.Hovering = null;
+				else {
+					Hovering = false;
+
+					WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Arrow]);
+					WindowBase.Hovering = null;
 					Color = Colors.LightPurple;
 				}
 			};
 
-			_window.Window.MouseButtonPressed += (object? _sender, MouseButtonEventArgs _event) => {
+			WindowBase.Window.MouseButtonPressed += (object? _sender, MouseButtonEventArgs _event) => {
+				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
-					if (_window.Hovering == this) _window.Clicking = this;
+					if (WindowBase.Hovering == this) WindowBase.Clicking = this;
 				}
 			};
 
-			_window.Window.MouseButtonReleased += (object? _sender, MouseButtonEventArgs _event) => {
+			WindowBase.Window.MouseButtonReleased += (object? _sender, MouseButtonEventArgs _event) => {
+				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
-					if (_window.Clicking == this && _window.Hovering == this) {
+					if (WindowBase.Clicking == this && WindowBase.Hovering == this) {
                         OnClickEvent();
                     }
 				}
 			};
 
 			Color = Colors.LightPurple;
+		}
+
+		~Button() {
+			
 		}
 
 		private Text textElement = new();

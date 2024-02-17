@@ -6,11 +6,10 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using nk.Carcassonne;
 using SFML.Graphics;
 using SFML.System;
 
-namespace nk {
+namespace nk.Carcassonne {
 	public class RoundedRectangleShape() : Shape, Drawable {
 
 		protected VertexArray vertexs    = new();
@@ -33,7 +32,7 @@ namespace nk {
 			);
 		}
 
-		public bool Hovering() {
+		public bool GetHovering() {
 			return Contains(MouseListener.Position.X, MouseListener.Position.Y);
 		}
 
