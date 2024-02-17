@@ -19,7 +19,7 @@ namespace nk.Carcassonne {
 		LEFT, MIDDLE, RIGHT
 	}
 
-	public class Button : RoundedRectangleShape, Drawable, IGetGlobalBounds {
+	public class Button : RoundedRectangleShape, IDrawableObject {
 
 		public ButtonElementType  ElementType   { get; set; } = ButtonElementType.TEXT;
 		public ButtonElementAlign ElementAlign  { get; set; } = ButtonElementAlign.MIDDLE;
@@ -27,16 +27,16 @@ namespace nk.Carcassonne {
 		public ColorSF            NormalColor   { get; set; } = Colors.LightPurple;
 		public ColorSF            HoveringColor { get; set; } = Colors.Purple;
 
-		public  bool Hovering { get; private set; }= false;
-		private bool Hovered  = false;
-		private bool Relesed  = false;
+		public  bool Hovering { get; private set; } = false;
+		private bool Hovered = false;
+		private bool Relesed = false;
 
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
 
 		public Button() {
-			MouseMovedEvent = (object? _sender, MouseMoveEventArgs _event) => {
+			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
 				if (GetHovering()) Hovered = true;
@@ -58,16 +58,14 @@ namespace nk.Carcassonne {
 				}
 			};
 
-			MouseButtonPressedEvent = (object? _sender, MouseButtonEventArgs _event) => {
-
-
+			MouseButtonPressedEvent = (_sender, _event) => {
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
                     if (WindowBase.Hovering == this) WindowBase.Clicking = this;
 				}
 			};
 
-			MouseButtonReleasedEvent = (object? _sender, MouseButtonEventArgs _event) => {
+			MouseButtonReleasedEvent = (_sender, _event) => {
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
                     if (WindowBase.Clicking == this && WindowBase.Hovering == this) {
@@ -84,7 +82,6 @@ namespace nk.Carcassonne {
 		}
 
 		~Button() {
-            Console.WriteLine("dis");
             WindowBase.Window.MouseMoved          -= MouseMovedEvent;
 			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;
 			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;

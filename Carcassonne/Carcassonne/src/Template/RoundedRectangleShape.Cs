@@ -29,11 +29,15 @@ namespace nk.Carcassonne {
 			);
 		}
 
-		public bool GetHovering() {
+		protected bool GetHovering() {
 			return GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y);
 		}
 
-		private ushort pointCount = 2;
+		private ushort   pointCount = 2;
+		private Vector2f size = new(30, 30);
+		private float    radius = 5f;
+		private ColorSF  color = new(255, 255, 255);
+
 		public  ushort PointCount {
 			get => pointCount;
 			set {
@@ -42,7 +46,6 @@ namespace nk.Carcassonne {
 			}
 		}
 
-		private Vector2f size = new(30, 30);
 		public  Vector2f Size {
 			get => size;
 			set {
@@ -51,7 +54,6 @@ namespace nk.Carcassonne {
 			}
 		}
 
-		private float radius = 5f;
 		public  float Radius {
 			get => radius;
 			set {
@@ -60,7 +62,6 @@ namespace nk.Carcassonne {
 			}
 		}
 
-		private ColorSF color = new(255, 255, 255);
 		public  ColorSF Color {
 			get => color;
 			set {

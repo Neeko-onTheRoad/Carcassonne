@@ -11,7 +11,7 @@ using SFML.Graphics;
 namespace nk.Carcassonne {
 	public abstract class SceneBase() : Drawable {
 
-		public List<IGetGlobalBounds>   Sprites { get; protected set; } = [];
+		public List<IDrawableObject>    Objects { get; protected set; } = [];
 		public List<Action<ClientTime>> Updates { get; protected set; } = [];
 		
 		public abstract void Initialize();
@@ -21,12 +21,10 @@ namespace nk.Carcassonne {
 		}
 
 		void Drawable.Draw(RenderTarget _target, RenderStates _state) {
-			Sprites.ForEach((i) => {
-				_target.Draw(i, _state);
+			Objects.ForEach(i => {
+                _target.Draw(i, _state);
 			});
 		}
-
-		
 
 	}
 }

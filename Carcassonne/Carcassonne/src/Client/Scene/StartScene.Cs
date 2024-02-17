@@ -20,17 +20,17 @@ namespace nk.Carcassonne {
 
 			//====================================================================================| Title
 
-			TextBounded title = new() {
+			TextObject title = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.075f),
 				Font            = Fonts.Normal,
 				DisplayedString = "Not Carcassonne",
 				Position        = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.X * 0.05f)
 			};
-			Sprites.Add(title);
+			Objects.Add(title);
 
 			//====================================================================================| Comment
 
-			TextBounded comment = new() {
+			TextObject comment = new() {
 				CharacterSize    = (uint)(WindowBase.WindowSize.X * 0.02f),
 				Font             = Fonts.Normal,
 				Rotation         = -10,
@@ -44,7 +44,7 @@ namespace nk.Carcassonne {
 				comment.GetGlobalBounds().Width / 2,
 				comment.GetGlobalBounds().Height / 2
 			);
-			Sprites.Add(comment);
+			Objects.Add(comment);
 			Updates.Add((_clientTime) => {
 				float scale = 1f + 0.075f * (float)Math.Sin(_clientTime.TotalTimeElapsed * 7);
 				comment.Scale = new(scale, scale);
@@ -52,7 +52,7 @@ namespace nk.Carcassonne {
 
 			//====================================================================================| Version
 
-			TextBounded version = new() {
+			TextObject version = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
 				Font            = Fonts.Normal,
 				FillColor       = new(255, 255, 255),
@@ -62,7 +62,7 @@ namespace nk.Carcassonne {
 				WindowBase.WindowSize.X - version.GetGlobalBounds().Width  - WindowBase.WindowSize.X * 0.01f,
 				WindowBase.WindowSize.Y - version.GetGlobalBounds().Height - WindowBase.WindowSize.X * 0.01f
 			);
-			Sprites.Add(version);
+			Objects.Add(version);
 
 			//====================================================================================| Connect Buttons
 
@@ -75,7 +75,7 @@ namespace nk.Carcassonne {
 
                 }
 			};
-			Sprites.Add(connectButton);
+			Objects.Add(connectButton);
 
 			//====================================================================================| Host Buttons
 
@@ -88,7 +88,7 @@ namespace nk.Carcassonne {
                     
                 }
 			};
-			Sprites.Add(hostButton);
+			Objects.Add(hostButton);
 
 			//====================================================================================| Option Buttons
 
@@ -101,7 +101,7 @@ namespace nk.Carcassonne {
 
                 }
 			};
-			Sprites.Add(optionButton);
+			Objects.Add(optionButton);
 
 			//====================================================================================| Exit Buttons
 
@@ -112,7 +112,15 @@ namespace nk.Carcassonne {
 				TextElement   = new(st.Exit, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = WindowBase.Window.Close
 			};
-			Sprites.Add(exitButton);
+			Objects.Add(exitButton);
+
+			//====================================================================================| Exit Buttons
+
+			WindowTab connectWindow = new() {
+				Size = new(460, 220),
+				Position = new(100, 100)
+			};
+			Objects.Add(connectWindow);
 
         }
 	}

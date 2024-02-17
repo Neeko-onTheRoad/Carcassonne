@@ -11,6 +11,7 @@ using SFML.System;
 using SFML.Graphics;
 
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace nk.Carcassonne {
 
@@ -100,11 +101,18 @@ namespace nk.Carcassonne {
 				DeltaTime = deltaTime;
 
 				if (totalTimeBeforUpdate >= TimeUntilUpdate) {
-					foreach (var i in NowScene.Sprites) {
-                        if (i.GetGlobalBounds().Contains(
-							MouseListener.Position.X, MouseListener.Position.Y
-						)) {
-							Hovering = i;
+					foreach (var i in NowScene.Objects) {
+                        if (i.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
+                            if (i.GetType().GetInterfaces()[0] == typeof(IMultyDrawableObject)) {
+								foreach(var j in (i as IMultyDrawableObject ?? new WindowTab()).AddedObjects) {
+									if (j.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
+                                        Hovering = j;
+										break;
+									}
+								}
+							}
+
+                            Hovering = i;
 							break;
 						}
 						Hovering = null;
@@ -117,7 +125,7 @@ namespace nk.Carcassonne {
 
 					NowScene.Update(ClientTime);
 
-					Window.Clear(new(0, 0, 0));
+					Window.Clear(new(25, 25, 25));
 					Window.Draw(NowScene);
 					Window.Display();
 				}
