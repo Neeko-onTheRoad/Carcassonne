@@ -59,7 +59,7 @@ namespace nk.Carcassonne {
 
 		public static void ChangeScene(SceneBase _scene) {
 			NowScene = _scene;
-			NowScene.Initialize();
+			NowScene.InitializeAll();
 		}
 
 		//============================================================| CreateNewWindow
@@ -101,19 +101,21 @@ namespace nk.Carcassonne {
 				DeltaTime = deltaTime;
 
 				if (totalTimeBeforUpdate >= TimeUntilUpdate) {
-					foreach (var i in NowScene.Objects) {
+					foreach (var i in NowScene.ObjectsRV) {
                         if (i.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
                             if (i.GetType().GetInterfaces()[0] == typeof(IMultyDrawableObject)) {
 								foreach(var j in (i as IMultyDrawableObject ?? new WindowTab()).AddedObjects) {
 									if (j.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
                                         Hovering = j;
+										Console.WriteLine(totalTimeElapsed);
 										break;
 									}
 								}
 							}
-
-                            Hovering = i;
-							break;
+							else {
+								Hovering = i;
+								break;
+							}
 						}
 						Hovering = null;
 					}

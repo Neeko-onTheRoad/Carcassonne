@@ -29,10 +29,6 @@ namespace nk.Carcassonne {
 			);
 		}
 
-		protected bool GetHovering() {
-			return GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y);
-		}
-
 		private ushort   pointCount = 2;
 		private Vector2f size = new(30, 30);
 		private float    radius = 5f;

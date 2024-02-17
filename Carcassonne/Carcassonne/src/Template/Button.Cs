@@ -39,18 +39,16 @@ namespace nk.Carcassonne {
 			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
-				if (GetHovering()) Hovered = true;
+				if (WindowBase.Hovering == this) Hovered = true;
 				else Relesed = true;
 
 				if (Hovered) {
-                    WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Hand]);
                     Color = Colors.Purple;
 
 					Hovering = true;
 					Hovered  = false;
 				}
 				if (Relesed) {
-					WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Arrow]);
 					Color = Colors.LightPurple;
 
 					Hovering = false;
@@ -123,6 +121,13 @@ namespace nk.Carcassonne {
 
 				TextElement.Position = position;
 			}
+		}
+
+		public new FloatRect GetGlobalBounds() {
+			if (Show) {
+				return base.GetGlobalBounds();
+			}
+			else return new(0, 0, 0, 0);
 		}
 
 		void Drawable.Draw(RenderTarget _target, RenderStates _states) {

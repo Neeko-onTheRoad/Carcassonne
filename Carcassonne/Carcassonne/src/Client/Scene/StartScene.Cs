@@ -12,7 +12,7 @@ using SFML.Graphics;
 namespace nk.Carcassonne {
 	public class StartScene() : SceneBase() {
 
-		public override void Initialize() {
+		protected override void Initialize() {
 			
 			StartSceneST st = new(WindowBase.Language);
 
@@ -118,7 +118,8 @@ namespace nk.Carcassonne {
 
 			WindowTab connectWindow = new() {
 				Size = new(460, 220),
-				Position = new(100, 100)
+				Position = new(100, 100),
+				Movement = true
 			};
 			Objects.Add(connectWindow);
 
