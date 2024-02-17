@@ -19,57 +19,75 @@ namespace nk.Carcassonne {
 		LEFT, MIDDLE, RIGHT
 	}
 
-	public class Button : RoundedRectangleShape, Drawable {
+	public class Button : RoundedRectangleShape, Drawable, IGetGlobalBounds {
 
-		public ButtonElementType  ElementType  { get; set; } = ButtonElementType.TEXT;
-		public ButtonElementAlign ElementAlign { get; set; } = ButtonElementAlign.MIDDLE;
+		public ButtonElementType  ElementType   { get; set; } = ButtonElementType.TEXT;
+		public ButtonElementAlign ElementAlign  { get; set; } = ButtonElementAlign.MIDDLE;
+		public bool               Show          { get; set; } = true;
+		public ColorSF            NormalColor   { get; set; } = Colors.LightPurple;
+		public ColorSF            HoveringColor { get; set; } = Colors.Purple;
 
-		public bool Show { get; set; } = true;
-
-		public  bool Hovering { get; protected set ; } = false;
+		public  bool Hovering { get; private set; }= false;
 		private bool Hovered  = false;
 		private bool Relesed  = false;
 
+		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
+		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
+		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
+
 		public Button() {
-			WindowBase.Window.MouseMoved += (object? _sender, MouseMoveEventArgs _event) => {
+			MouseMovedEvent = (object? _sender, MouseMoveEventArgs _event) => {
 				if (!Show) return;
-				if (GetHovering()) {
+
+				if (GetHovering()) Hovered = true;
+				else Relesed = true;
+
+				if (Hovered) {
+                    WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Hand]);
+                    Color = Colors.Purple;
+
 					Hovering = true;
-
-					WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Hand]);
-					WindowBase.Hovering = this;
-					Color = Colors.Purple;
+					Hovered  = false;
 				}
-				else {
-					Hovering = false;
-
+				if (Relesed) {
 					WindowBase.Window.SetMouseCursor(WindowBase.Cursors[Cursor.CursorType.Arrow]);
-					WindowBase.Hovering = null;
 					Color = Colors.LightPurple;
+
+					Hovering = false;
+					Relesed  = false;
 				}
 			};
 
-			WindowBase.Window.MouseButtonPressed += (object? _sender, MouseButtonEventArgs _event) => {
+			MouseButtonPressedEvent = (object? _sender, MouseButtonEventArgs _event) => {
+
+
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
-					if (WindowBase.Hovering == this) WindowBase.Clicking = this;
+                    if (WindowBase.Hovering == this) WindowBase.Clicking = this;
 				}
 			};
 
-			WindowBase.Window.MouseButtonReleased += (object? _sender, MouseButtonEventArgs _event) => {
+			MouseButtonReleasedEvent = (object? _sender, MouseButtonEventArgs _event) => {
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
-					if (WindowBase.Clicking == this && WindowBase.Hovering == this) {
+                    if (WindowBase.Clicking == this && WindowBase.Hovering == this) {
                         OnClickEvent();
                     }
 				}
 			};
 
+			WindowBase.Window.MouseMoved          += MouseMovedEvent;
+			WindowBase.Window.MouseButtonPressed  += MouseButtonPressedEvent;
+			WindowBase.Window.MouseButtonReleased += MouseButtonReleasedEvent;
+
 			Color = Colors.LightPurple;
 		}
 
 		~Button() {
-			
+            Console.WriteLine("dis");
+            WindowBase.Window.MouseMoved          -= MouseMovedEvent;
+			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;
+			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
 
 		private Text textElement = new();

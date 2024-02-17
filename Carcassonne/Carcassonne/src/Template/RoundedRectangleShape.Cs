@@ -23,17 +23,14 @@ namespace nk.Carcassonne {
 			return vertexs.VertexCount;
 		}
 
-		public bool Contains(float _x, float _y) {
-			return(
-				(Position.X <= _x) &&
-				(Position.Y <= _y) &&
-				(Position.X + Size.X >= _x) &&
-				(Position.Y + Size.Y >= _y)
+		public new FloatRect GetGlobalBounds() {
+			return new (
+				Position.X, Position.Y, Size.X, Size.Y
 			);
 		}
 
 		public bool GetHovering() {
-			return Contains(MouseListener.Position.X, MouseListener.Position.Y);
+			return GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y);
 		}
 
 		private ushort pointCount = 2;

@@ -20,7 +20,7 @@ namespace nk.Carcassonne {
 
 			//====================================================================================| Title
 
-			Text title = new() {
+			TextBounded title = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.075f),
 				Font            = Fonts.Normal,
 				DisplayedString = "Not Carcassonne",
@@ -30,7 +30,7 @@ namespace nk.Carcassonne {
 
 			//====================================================================================| Comment
 
-			Text comment = new() {
+			TextBounded comment = new() {
 				CharacterSize    = (uint)(WindowBase.WindowSize.X * 0.02f),
 				Font             = Fonts.Normal,
 				Rotation         = -10,
@@ -52,7 +52,7 @@ namespace nk.Carcassonne {
 
 			//====================================================================================| Version
 
-			Text version = new() {
+			TextBounded version = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
 				Font            = Fonts.Normal,
 				FillColor       = new(255, 255, 255),
@@ -72,8 +72,8 @@ namespace nk.Carcassonne {
 				Radius       = WindowBase.WindowSize.X * 0.01f,
 				TextElement  = new(st.Connect, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
-					
-				}
+
+                }
 			};
 			Sprites.Add(connectButton);
 
@@ -85,8 +85,8 @@ namespace nk.Carcassonne {
 				Radius        = WindowBase.WindowSize.X * 0.01f,
 				TextElement   = new(st.Host, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = () => {
-					
-				}
+                    
+                }
 			};
 			Sprites.Add(hostButton);
 
@@ -98,8 +98,8 @@ namespace nk.Carcassonne {
 				Radius       = WindowBase.WindowSize.X * 0.01f,
 				TextElement  = new(st.Option, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
-					
-				}
+
+                }
 			};
 			Sprites.Add(optionButton);
 
@@ -110,9 +110,10 @@ namespace nk.Carcassonne {
 				Size          = new(WindowBase.WindowSize.X * 0.145f,  WindowBase.WindowSize.X * 0.05f),
 				Radius        = WindowBase.WindowSize.X * 0.01f,
 				TextElement   = new(st.Exit, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
-				OnClickEvent  =  WindowBase.Window.Close
+				OnClickEvent  = WindowBase.Window.Close
 			};
 			Sprites.Add(exitButton);
+
         }
 	}
 }

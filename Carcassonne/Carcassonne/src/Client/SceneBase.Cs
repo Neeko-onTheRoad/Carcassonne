@@ -11,7 +11,7 @@ using SFML.Graphics;
 namespace nk.Carcassonne {
 	public abstract class SceneBase() : Drawable {
 
-		public SpriteUnion              Sprites { get; protected set; } = [];
+		public List<IGetGlobalBounds>   Sprites { get; protected set; } = [];
 		public List<Action<ClientTime>> Updates { get; protected set; } = [];
 		
 		public abstract void Initialize();

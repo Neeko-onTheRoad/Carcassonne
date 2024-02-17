@@ -100,7 +100,17 @@ namespace nk.Carcassonne {
 				DeltaTime = deltaTime;
 
 				if (totalTimeBeforUpdate >= TimeUntilUpdate) {
-					Window.DispatchEvents();
+					foreach (var i in NowScene.Sprites) {
+                        if (i.GetGlobalBounds().Contains(
+							MouseListener.Position.X, MouseListener.Position.Y
+						)) {
+							Hovering = i;
+							break;
+						}
+						Hovering = null;
+					}
+
+                    Window.DispatchEvents();
 
 					ClientTime.Update(totalTimeBeforUpdate, clock.ElapsedTime.AsSeconds());
 					totalTimeBeforUpdate = 0f;
