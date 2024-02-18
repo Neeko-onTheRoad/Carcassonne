@@ -14,7 +14,7 @@ namespace nk.Carcassonne {
 		public List<Player>                   Players { get; protected set; } = [];
 		public Dictionary<Vector2i, TileBase> Cards   { get; protected set; } = [];
 
-		protected override void Initialize() {
+		public override void Initialize() {
 			
 		}
 

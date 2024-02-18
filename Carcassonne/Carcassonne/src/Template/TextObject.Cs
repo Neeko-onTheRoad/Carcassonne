@@ -11,7 +11,8 @@ using SFML.Graphics;
 
 namespace nk {
 	public class TextObject : Text, IDrawableObject {
-		public bool Show { get; set; } = true;
+		public bool Show   { get; set; } = true;
+		public bool Ignore { get; set; } = false;
 
 		public new void Draw(RenderTarget _target, RenderStates _state) {
 			if (!Show) return;

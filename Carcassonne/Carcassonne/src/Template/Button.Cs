@@ -24,12 +24,13 @@ namespace nk.Carcassonne {
 		public ButtonElementType  ElementType   { get; set; } = ButtonElementType.TEXT;
 		public ButtonElementAlign ElementAlign  { get; set; } = ButtonElementAlign.MIDDLE;
 		public bool               Show          { get; set; } = true;
+		public bool               Ignore        { get; set; } = false;
 		public ColorSF            NormalColor   { get; set; } = Colors.LightPurple;
 		public ColorSF            HoveringColor { get; set; } = Colors.Purple;
 
 		public  bool Hovering { get; private set; } = false;
 		private bool Hovered = false;
-		private bool Relesed = false;
+		private byte Relesed = 0;
 
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
@@ -39,20 +40,23 @@ namespace nk.Carcassonne {
 			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
-				if (WindowBase.Hovering == this) Hovered = true;
-				else Relesed = true;
+                if (WindowBase.Hovering == this) Hovered = true;
+				else if (Relesed == 2) Relesed = 1;
 
 				if (Hovered) {
                     Color = Colors.Purple;
+					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
 
 					Hovering = true;
 					Hovered  = false;
+					Relesed  = 2;
 				}
-				if (Relesed) {
+				if (Relesed == 1) {
 					Color = Colors.LightPurple;
+					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
 
-					Hovering = false;
-					Relesed  = false;
+                    Hovering = false;
+					Relesed  = 0;
 				}
 			};
 

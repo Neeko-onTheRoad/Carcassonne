@@ -10,7 +10,8 @@ using SFML.Graphics;
 
 namespace nk.Carcassonne {
 	public interface IDrawableObject : Drawable {
-		public bool Show { get; set; }
+		public bool Show   { get; set; }
+		public bool Ignore { get; set; }
 
 		FloatRect GetGlobalBounds();
 	}

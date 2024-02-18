@@ -11,7 +11,7 @@ using SFML.System;
 namespace nk.Carcassonne {
 	public class StartScene() : SceneBase() {
 
-		protected override void Initialize() {
+		public override void Initialize() {
 			
 			StartSceneST st = new(WindowBase.Language);
 
@@ -116,10 +116,11 @@ namespace nk.Carcassonne {
 			//====================================================================================| Exit Buttons
 
 			WindowTab connectWindow = new() {
-				Size     = new(460, 220),
-				Position = new(100, 100),
-				Movement = true
+				Size     = new(WindowBase.WindowSize.X * 0.35f, WindowBase.WindowSize.X * 0.15f),
+				Movement = true,
+				Title    = st.Connect
 			};
+			connectWindow.ToCenter();
 			Objects.Add(connectWindow);
 
         }

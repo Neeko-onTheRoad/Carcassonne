@@ -11,7 +11,6 @@ using SFML.System;
 using SFML.Graphics;
 
 using System.Runtime.InteropServices;
-using System.Reflection;
 
 namespace nk.Carcassonne {
 
@@ -42,9 +41,6 @@ namespace nk.Carcassonne {
 		public static void Init(string _title, string _version) {
 			WindowTitle   = _title;
 			ClientVersion = _version;
-			
-			Cursors[Cursor.CursorType.Arrow] = new(Cursor.CursorType.Arrow);
-			Cursors[Cursor.CursorType.Hand]  = new(Cursor.CursorType.Hand);
 		}
 
 		//====================================================================================================| Dll Imports
@@ -59,7 +55,7 @@ namespace nk.Carcassonne {
 
 		public static void ChangeScene(SceneBase _scene) {
 			NowScene = _scene;
-			NowScene.InitializeAll();
+			NowScene.Initialize();
 		}
 
 		//============================================================| CreateNewWindow
@@ -76,6 +72,28 @@ namespace nk.Carcassonne {
 			Window = new RenderWindow(new VideoMode(WindowSize.X, WindowSize.Y), WindowTitle, style, setting);
 
 			ChangeScene(NowScene);
+		}
+
+		//============================================================| GetHovering
+
+		private static IDrawableObject? GetHovering(List<IDrawableObject> objects) {
+			IDrawableObject? hovering = null;
+
+			foreach (var obj in NowScene.Objects) {
+				if (obj.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
+					if (!obj.Ignore) hovering = obj;
+                }
+			}
+            while (hovering is IMultyDrawableObject @object) {
+                if (@object.AddedObjects.Capacity <= 0) return null;
+				foreach(var obj in @object.AddedObjects) {
+					if (obj.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
+						if (!obj.Ignore) hovering = obj;
+					}
+				}
+			}
+
+			return hovering;
 		}
 
 		//============================================================| Run
@@ -101,26 +119,9 @@ namespace nk.Carcassonne {
 				totalTimeBeforUpdate += deltaTime;
 				DeltaTime = deltaTime;
 
-				if (totalTimeBeforUpdate >= TimeUntilUpdate) {
+                if (totalTimeBeforUpdate >= TimeUntilUpdate) {
 
-                    foreach (var i in NowScene.ObjectsRV) {
-                        if (i.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
-                            if (i.GetType().GetInterfaces()[0] == typeof(IMultyDrawableObject)) {
-								foreach(var j in (i as IMultyDrawableObject ?? new WindowTab()).AddedObjects) {
-									if (j.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
-                                        Hovering = j;
-										break;
-									}
-								}
-								break;
-							}
-							else {
-								Hovering = i;
-								break;
-							}
-						}
-						Hovering = null; 
-					}
+					Hovering = GetHovering(NowScene.Objects);
 
                     Window.DispatchEvents();
 
@@ -129,7 +130,7 @@ namespace nk.Carcassonne {
 
 					NowScene.Update(ClientTime);
 
-					Window.Clear(new(25, 25, 25));
+					Window.Clear(Colors.Gray);
 					Window.Draw(NowScene);
 					Window.Display();
 				}

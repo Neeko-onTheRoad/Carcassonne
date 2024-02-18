@@ -14,6 +14,8 @@ namespace nk.Carcassonne {
 		public readonly static ColorSF Purple      = new(101, 53,  136);
 		public readonly static ColorSF Yellow      = new(255, 247, 0  );
 
+		public readonly static ColorSF Gray = new(25 , 25 , 25);
+
 		public readonly static ColorSF TransparentBlack = new(0  , 0  , 0  , 150);
 	}
 }
