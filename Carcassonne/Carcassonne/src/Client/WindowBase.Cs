@@ -33,8 +33,8 @@ namespace nk.Carcassonne {
 		public static Dictionary<Cursor.CursorType, Cursor> Cursors { get; private set; } = [];
 
 		public static string  Language { get; set; } = "ko";
-		public static object? Clicking { get; set; } = null;
-		public static object? Hovering { get; set; } = null;
+		public static IDrawableObject? Clicking { get; set; } = null;
+		public static IDrawableObject? Hovering { get; set; } = null;
 
 		//====================================================================================================| Constructors
 
@@ -77,23 +77,27 @@ namespace nk.Carcassonne {
 		//============================================================| GetHovering
 
 		private static IDrawableObject? GetHovering(List<IDrawableObject> objects) {
-			IDrawableObject? hovering = null;
+			for (int index = objects.Count - 1; index >= 0; index--) {
+				IDrawableObject obj = objects[index];
 
-			foreach (var obj in NowScene.Objects) {
-				if (obj.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
-					if (!obj.Ignore) hovering = obj;
-                }
-			}
-            while (hovering is IMultyDrawableObject @object) {
-                if (@object.AddedObjects.Capacity <= 0) return null;
-				foreach(var obj in @object.AddedObjects) {
-					if (obj.GetGlobalBounds().Contains(MouseListener.Position.X, MouseListener.Position.Y)) {
-						if (!obj.Ignore) hovering = obj;
+				if (MouseListener.IsHovering(obj)) {
+					IDrawableObject hovering = obj;
+
+					while (hovering is IMultyDrawableObject @object) {
+						for (int jndex = @object.AddedObjects.Count - 1; jndex >= 0; jndex--) {
+							IDrawableObject jovering = @object.AddedObjects[jndex];
+
+							if (MouseListener.IsHovering(jovering)) {
+								return jovering;
+							}
+						}
 					}
+
+					return hovering;
 				}
 			}
 
-			return hovering;
+			return null;
 		}
 
 		//============================================================| Run
@@ -166,6 +170,18 @@ namespace nk.Carcassonne {
 		}
 
 		//============================================================| IsHovering
+
+		public static bool IsHovering(IDrawableObject _object) {
+			return _object.GetGlobalBounds().Contains(
+				Position.X, Position.Y
+			);
+		}
+
+		public static bool IsHovering(FloatRect _rect) {
+			return _rect.Contains(
+				Position.X, Position.Y
+			);
+		}
 
 		public static bool IsHovering(Shape _object) {
             return _object.GetGlobalBounds().Contains(

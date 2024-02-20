@@ -9,7 +9,7 @@
 using SFML.Graphics;
 
 namespace nk.Carcassonne {
-	public interface IDrawableObject : Drawable {
+	public interface IDrawableObject : Drawable, ICursorChangeable {
 		public bool Show   { get; set; }
 		public bool Ignore { get; set; }
 

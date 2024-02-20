@@ -12,8 +12,9 @@ using SFML.System;
 namespace nk.Carcassonne {
 	public class SubWindow : IDrawableObject {
 
-		public bool Show   { get; set; } = true;
-		public bool Ignore { get; set; } = true;
+		public bool Show           { get; set; } = true;
+		public bool Ignore         { get; set; } = true;
+		public bool CursorChanging { get; set; } = false;
 
 		private RenderWindow Window = new(new(0, 0), "");
 

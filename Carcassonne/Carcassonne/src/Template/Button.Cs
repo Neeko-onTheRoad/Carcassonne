@@ -21,15 +21,16 @@ namespace nk.Carcassonne {
 
 	public class Button : RoundedRectangleShape, IDrawableObject {
 
-		public ButtonElementType  ElementType   { get; set; } = ButtonElementType.TEXT;
-		public ButtonElementAlign ElementAlign  { get; set; } = ButtonElementAlign.MIDDLE;
-		public bool               Show          { get; set; } = true;
-		public bool               Ignore        { get; set; } = false;
-		public ColorSF            NormalColor   { get; set; } = Colors.LightPurple;
-		public ColorSF            HoveringColor { get; set; } = Colors.Purple;
+		public ButtonElementType  ElementType    { get; set; } = ButtonElementType.TEXT;
+		public ButtonElementAlign ElementAlign   { get; set; } = ButtonElementAlign.MIDDLE;
+		public bool               Show           { get; set; } = true;
+		public bool               Ignore         { get; set; } = false;
+		public bool               CursorChanging { get; set; } = true;
+		public ColorSF            NormalColor    { get; set; } = Colors.LightPurple;
+		public ColorSF            HoveringColor  { get; set; } = Colors.Purple;
 
 		public  bool Hovering { get; private set; } = false;
-		private bool Hovered = false;
+		private byte Hovered = 2;
 		private byte Relesed = 0;
 
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
@@ -40,23 +41,27 @@ namespace nk.Carcassonne {
 			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
-                if (WindowBase.Hovering == this) Hovered = true;
-				else if (Relesed == 2) Relesed = 1;
+                if (WindowBase.Hovering == this) { if (Hovered == 2) Hovered = 1; }
+				else if (Relesed == 2) { Relesed = 1;}
 
-				if (Hovered) {
+                if (Hovered == 1) {
                     Color = Colors.Purple;
-					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
+                    WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
 
 					Hovering = true;
-					Hovered  = false;
+					Hovered  = 0;
 					Relesed  = 2;
 				}
 				if (Relesed == 1) {
 					Color = Colors.LightPurple;
-					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
+
+					if (!(WindowBase.Hovering ?? new EmptyObject()).CursorChanging) {
+						WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
+					}
 
                     Hovering = false;
 					Relesed  = 0;
+                    Hovered  = 2;
 				}
 			};
 

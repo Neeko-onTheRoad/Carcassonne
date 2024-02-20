@@ -9,7 +9,6 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using System.Threading.Channels;
 
 namespace nk.Carcassonne {
 
@@ -19,11 +18,12 @@ namespace nk.Carcassonne {
 
 		private bool needUpdate = true;
 
-		public bool Show      { get; set; } = true;
-		public bool Ignore    { get; set; } = false;
-		public bool Movement  { get; set; } = true;
-		public bool Popupable { get; set; } = true;
-		public bool Closeable { get; set; } = true;
+		public bool Show           { get; set; } = true;
+		public bool Ignore         { get; set; } = false;
+		public bool Movement       { get; set; } = true;
+		public bool Popupable      { get; set; } = true;
+		public bool Closeable      { get; set; } = true;
+		public bool CursorChanging { get; set; } = false;
 
 		private string   title           = "";
 		private ColorSF  borderColor     = Colors.LightPurple;
@@ -39,10 +39,10 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Normal Shapes
 
-		private RectangleShapeObject Background;
-		private RectangleShapeObject TitleBar;
-		private TextObject           TitleStr;
-		private Button               CloseButton;
+		private RectangleShapeObject? Background;
+		private RectangleShapeObject? TitleBar;
+		private TextObject?           TitleStr;
+		private Button?               CloseButton;
 
 		//====================================================================================================| Getter, Setter
 
@@ -103,9 +103,10 @@ namespace nk.Carcassonne {
 			AddedObjects.Add(Background);
 
 			TitleBar = new() {
-				Position  = Position,
-				Size      = new(Size.X, WindowBase.WindowSize.X * 0.02f),
-				FillColor = BorderColor,
+				Position       = Position,
+				Size           = new(Size.X, WindowBase.WindowSize.X * 0.02f),
+				FillColor      = BorderColor,
+				CursorChanging = true
 			};
 			AddedObjects.Add(TitleBar);
 
@@ -123,10 +124,11 @@ namespace nk.Carcassonne {
 
             if (Closeable) {
 				CloseButton = new() {
-					Size       = new(WindowBase.WindowSize.X * 0.03f, WindowBase.WindowSize.X * 0.02f),
+					Size       = new(WindowBase.WindowSize.X * 0.03f, WindowBase.WindowSize.X * 0.021f),
 					Position   = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * 0.03f, 0),
 					Radius     = 0,
 					PointCount = 0,
+					OnClickEvent = () => { Show = false; }
 				};
 				AddedObjects.Add(CloseButton);
 			}
@@ -136,7 +138,7 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Constructor
 
-		private bool BorderHovered  = false;
+		private byte BorderHovered  = 2;
 		private byte BorderRelesed  = 0;
 
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
@@ -148,24 +150,25 @@ namespace nk.Carcassonne {
             MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
-				if (WindowBase.Hovering == TitleBar) BorderHovered = true;
+				if (WindowBase.Hovering == TitleBar) { if (BorderHovered == 2) BorderHovered = 1; }
 				else {
 					BorderColor = Colors.LightPurple;
 					if (BorderRelesed == 2) BorderRelesed = 1;
 				}
 
-				if (BorderHovered) {
+				if (BorderHovered == 1) {
 					if (Movement) BorderColor = Colors.Purple;
 					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
 
-					BorderHovered = false;
+					BorderHovered = 0;
 					BorderRelesed = 2;
 				}
 				if (BorderRelesed == 1) {
 					if (Movement) BorderColor = Colors.LightPurple;
 					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
 
-					BorderRelesed  = 0;
+					BorderRelesed = 0;
+					BorderHovered = 2;
 				}
 
                 if (Draging && Movement) {
@@ -175,8 +178,8 @@ namespace nk.Carcassonne {
 					if      (updatedPosition.Y < 0f)              updatedPosition = new(updatedPosition.X, 0f);
 					else if (updatedPosition.Y > positionLimit.Y) updatedPosition = new(updatedPosition.X, positionLimit.Y);
 					
-					if      (updatedPosition.X < 0f)               updatedPosition = new(0f              , updatedPosition.Y);
-					else if (updatedPosition.X > positionLimit.X)  updatedPosition = new(positionLimit.X,  updatedPosition.Y);
+					if      (updatedPosition.X < 0f)              updatedPosition = new(0f              , updatedPosition.Y);
+					else if (updatedPosition.X > positionLimit.X) updatedPosition = new(positionLimit.X,  updatedPosition.Y);
 					
 					// TODO
 					//if (Popupable) {
