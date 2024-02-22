@@ -18,11 +18,11 @@ namespace nk.Carcassonne {
 
 		private bool needUpdate = true;
 
-		public bool Show           { get; set; } = true;
-		public bool Ignore         { get; set; } = false;
-		public bool Movement       { get; set; } = true;
-		public bool Popupable      { get; set; } = true;
-		public bool Closeable      { get; set; } = true;
+		public bool Show		   { get; set; } = true;
+		public bool Ignore		 { get; set; } = false;
+		public bool Movement	   { get; set; } = true;
+		public bool Popupable	  { get; set; } = true;
+		public bool Closeable	  { get; set; } = true;
 		public bool CursorChanging { get; set; } = false;
 
 		private string   title           = "";
@@ -31,25 +31,25 @@ namespace nk.Carcassonne {
 		private Vector2f size            = new(100f, 100f);
 		private Vector2f position        = new(0f, 0f);
 
-		public bool     Draging      { get; set; } = false;
+		public bool	 Draging	  { get; set; } = false;
 		public Vector2f DragStartPos { get; set; } = new(0f, 0f);
 
-		public List<IDrawableObject> Objects      { get; set; } = [];
+		public List<IDrawableObject> Objects	  { get; set; } = [];
 		public List<IDrawableObject> AddedObjects { get; set; } = [];
 
 		//====================================================================================================| Normal Shapes
 
 		private RectangleShapeObject? Background;
 		private RectangleShapeObject? TitleBar;
-		private TextObject?           TitleStr;
-		private Button?               CloseButton;
+		private TextObject?		      TitleStr;
+		private Button?			      CloseButton;
 
 		//====================================================================================================| Getter, Setter
 
 		public string Title {
 			get => title;
 			set {
-				title      = value;
+				title	  = value;
 				needUpdate = true;
 			}
 		}
@@ -64,13 +64,13 @@ namespace nk.Carcassonne {
 			get => backgroundColor;
 			set {
 				backgroundColor = value;
-				needUpdate      = true;
+				needUpdate	  = true;
 			}
 		}
 		public Vector2f Size {
 			get => size;
 			set {
-				size       = value;
+				size	   = value;
 				needUpdate = true;
 			}
 		}
@@ -85,51 +85,59 @@ namespace nk.Carcassonne {
 		//====================================================================================================| Rerender
 
 		private void Rerender() {
-            AddedObjects.Clear();
+			AddedObjects.Clear();
 
-			Background = new() {
-				Position = Position + new Vector2f(
-					WindowBase.WindowSize.X * 0.001f,
-					WindowBase.WindowSize.X * 0.021f
-				),
-				Size = Size - new Vector2f (
-					WindowBase.WindowSize.X * 0.002f,
-					WindowBase.WindowSize.X * 0.022f
-				),
-				FillColor        = BackgroundColor,
-				OutlineColor     = BorderColor,
-				OutlineThickness = WindowBase.WindowSize.X * 0.001f
-			};
+			//============================================================| Background
+
+			Background ??= new();
+
+			Background.Position = Position + new Vector2f(
+				WindowBase.WindowSize.X * 0.001f,
+				WindowBase.WindowSize.X * 0.021f
+			);
+			Background.Size = Size - new Vector2f (
+				WindowBase.WindowSize.X * 0.002f,
+				WindowBase.WindowSize.X * 0.022f
+			);
+			Background.FillColor        = BackgroundColor;
+			Background.OutlineColor     = BorderColor;
+			Background.OutlineThickness = WindowBase.WindowSize.X * 0.001f;
 			AddedObjects.Add(Background);
 
-			TitleBar = new() {
-				Position       = Position,
-				Size           = new(Size.X, WindowBase.WindowSize.X * 0.02f),
-				FillColor      = BorderColor,
-				CursorChanging = true
-			};
+			//============================================================| Titlebar
+
+			TitleBar ??= new();
+
+			TitleBar.Position	    = Position;
+			TitleBar.Size		    = new(Size.X, WindowBase.WindowSize.X * 0.02f);
+			TitleBar.FillColor      = BorderColor;
+			TitleBar.CursorChanging = true;
 			AddedObjects.Add(TitleBar);
 
-			TitleStr = new() {
-				DisplayedString = Title,
-				Font            = Fonts.Normal,
-				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.0125f),
-				Ignore          = true
-			};
-            TitleStr.Position = Position + new Vector2f(
+			//============================================================| TitleStr
+
+			TitleStr ??= new();
+
+			TitleStr.DisplayedString = Title;
+			TitleStr.Font            = Res.Fonts.Normal;
+			TitleStr.CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.0125f);
+			TitleStr.Ignore		     = true;
+			TitleStr.Position        = Position + new Vector2f(
 				WindowBase.WindowSize.X * 0.005f,
 				(WindowBase.WindowSize.X * 0.01f) - (TitleStr.GetGlobalBounds().Height * 0.65f)
 			);
 			AddedObjects.Add(TitleStr);
 
-            if (Closeable) {
-				CloseButton = new() {
-					Size       = new(WindowBase.WindowSize.X * 0.03f, WindowBase.WindowSize.X * 0.021f),
-					Position   = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * 0.03f, 0),
-					Radius     = 0,
-					PointCount = 0,
-					OnClickEvent = () => { Show = false; }
-				};
+			//============================================================| Close Button
+
+			if (Closeable) {
+				CloseButton ??= new();
+
+				CloseButton.Size	     = new(WindowBase.WindowSize.X * 0.028f, WindowBase.WindowSize.X * 0.019f);
+				CloseButton.Position     = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * 0.029f, WindowBase.WindowSize.X * 0.001f);
+				CloseButton.Radius	     = WindowBase.WindowSize.X * 0.002f;
+				CloseButton.PointCount   = 1;
+				CloseButton.OnClickEvent = () => { Show = false; };
 				AddedObjects.Add(CloseButton);
 			}
 
@@ -147,63 +155,43 @@ namespace nk.Carcassonne {
 
 		public WindowTab() {
 			
-            MouseMovedEvent = (_sender, _event) => {
+			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
 				if (WindowBase.Hovering == TitleBar) { if (BorderHovered == 2) BorderHovered = 1; }
-				else {
-					BorderColor = Colors.LightPurple;
-					if (BorderRelesed == 2) BorderRelesed = 1;
-				}
+				else if (BorderRelesed == 2) BorderRelesed = 1;
 
 				if (BorderHovered == 1) {
-					if (Movement) BorderColor = Colors.Purple;
 					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
 
 					BorderHovered = 0;
 					BorderRelesed = 2;
 				}
 				if (BorderRelesed == 1) {
-					if (Movement) BorderColor = Colors.LightPurple;
 					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
 
 					BorderRelesed = 0;
 					BorderHovered = 2;
 				}
 
-                if (Draging && Movement) {
+				if (Draging && Movement) {
 					Vector2f updatedPosition = DragStartPos + (Vector2f)MouseListener.DragDelta;
 					Vector2f positionLimit   = (Vector2f)WindowBase.WindowSize - Size;
 
-					if      (updatedPosition.Y < 0f)              updatedPosition = new(updatedPosition.X, 0f);
+					if	    (updatedPosition.Y < 0f)	          updatedPosition = new(updatedPosition.X, 0f             );
 					else if (updatedPosition.Y > positionLimit.Y) updatedPosition = new(updatedPosition.X, positionLimit.Y);
 					
-					if      (updatedPosition.X < 0f)              updatedPosition = new(0f              , updatedPosition.Y);
-					else if (updatedPosition.X > positionLimit.X) updatedPosition = new(positionLimit.X,  updatedPosition.Y);
-					
-					// TODO
-					//if (Popupable) {
-					//	Vector2i position = Mouse.GetPosition();
+					if	    (updatedPosition.X < 0f)			  updatedPosition = new(0f             , updatedPosition.Y);
+					else if (updatedPosition.X > positionLimit.X) updatedPosition = new(positionLimit.X, updatedPosition.Y);
 
-					//	if (
-					//		position.X < WindowBase.Window.Position.X ||
-					//		position.Y < WindowBase.Window.Position.Y ||
-					//		position.X > WindowBase.Window.Position.X + WindowBase.WindowSize.X ||
-					//		position.Y > WindowBase.Window.Position.Y + WindowBase.WindowSize.Y
-					//	) {
-							
-					//	}
-					//}
-
-                    Position    = updatedPosition;
-					BorderColor = Colors.Purple;
-                }
-            };
+					Position	= updatedPosition;
+				}
+			};
 
 			MouseButtonPressedEvent = (_sender, _event) => {
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
-                    if (WindowBase.Hovering == TitleBar) {
+					if (WindowBase.Hovering == TitleBar) {
 						DragStartPos = Position;
 						Draging = true;
 						WindowBase.Clicking = TitleBar;
@@ -215,7 +203,7 @@ namespace nk.Carcassonne {
 				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
 					Draging = false;
-                    if (WindowBase.Clicking == TitleBar) {
+					if (WindowBase.Clicking == TitleBar) {
 						WindowBase.Clicking = null;
 					}
 				}
@@ -229,7 +217,7 @@ namespace nk.Carcassonne {
 		//====================================================================================================| Destructor
 
 		~WindowTab() {
-			WindowBase.Window.MouseMoved          -= MouseMovedEvent;
+			WindowBase.Window.MouseMoved		  -= MouseMovedEvent;
 			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;
 			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
@@ -238,8 +226,8 @@ namespace nk.Carcassonne {
 
 		public void ToCenter() {
 			Position = new (
-				WindowBase.WindowSize.X / 2f - Size.X / 2,
-				WindowBase.WindowSize.Y / 2f - Size.Y / 2
+				WindowBase.WindowSize.X / 2f - Size.X / 2f,
+				WindowBase.WindowSize.Y / 2f - Size.Y / 2f
 			);
 		}
 
@@ -256,7 +244,7 @@ namespace nk.Carcassonne {
 		}
 		
 		void Drawable.Draw(RenderTarget _target, RenderStates _states) {
-            if (!Show) return;
+			if (!Show) return;
 			
 			if (needUpdate) {
 				Rerender();
@@ -264,7 +252,7 @@ namespace nk.Carcassonne {
 			}
 
 			AddedObjects.ForEach(i => {
-                _target.Draw(i, _states);
+				_target.Draw(i, _states);
 			});
 		}
 

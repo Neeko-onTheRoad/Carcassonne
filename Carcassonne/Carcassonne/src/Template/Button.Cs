@@ -12,7 +12,7 @@ using SFML.Window;
 
 namespace nk.Carcassonne {
 	public enum ButtonElementType {
-		TEXT, ICON
+		TEXT, ICON, BOTH
 	}
 
 	public enum ButtonElementAlign {
@@ -38,7 +38,8 @@ namespace nk.Carcassonne {
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
 
 		public Button() {
-			MouseMovedEvent = (_sender, _event) => {
+            
+            MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
                 if (WindowBase.Hovering == this) { if (Hovered == 2) Hovered = 1; }
@@ -94,12 +95,23 @@ namespace nk.Carcassonne {
 			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
 
-		private Text textElement = new();
-		public  Text TextElement {
+		private Text? textElement;
+		public  Text? TextElement {
 			get => textElement;
 			set {
-				textElement = value;
-				needUpdate  = true;
+				spriteElement = null;
+				textElement   = value;
+				needUpdate    = true;
+			}
+		}
+
+		private Sprite? spriteElement;
+		public  Sprite? SpriteElement {
+			get => spriteElement;
+			set {
+				textElement   = null;
+				spriteElement = value;
+				needUpdate    = true;
 			}
 		}
 
@@ -115,20 +127,37 @@ namespace nk.Carcassonne {
 		public Action OnClickEvent { get; set; } = () => {};
 
 		private void Rerender() {
-			if (ElementType == ButtonElementType.TEXT) {
-				Vector2f position = new(0, Position.Y + (Size.Y / 2) - (TextElement.CharacterSize * 0.55f));	
+			if (ElementType == ButtonElementType.TEXT || ElementType == ButtonElementType.BOTH) {
+				textElement ??= new();
+
+				Vector2f position = new(0, Position.Y + (Size.Y / 2) - (textElement.CharacterSize * 0.55f));	
 
 				if (ElementAlign == ButtonElementAlign.LEFT) {
 					position.X = Position.X + Margin;
 				}
 				else if (ElementAlign == ButtonElementAlign.MIDDLE) {
-					position.X = Position.X + ((Size.X - TextElement.GetGlobalBounds().Width) * 0.49f);
+					position.X = Position.X + ((Size.X - textElement.GetGlobalBounds().Width) * 0.49f);
 				}
 				else if (ElementAlign == ButtonElementAlign.RIGHT) {
-					position.X = Position.X + Size.X - TextElement.GetGlobalBounds().Width - Margin;
+					position.X = Position.X + Size.X - textElement.GetGlobalBounds().Width - Margin;
 				}
 
-				TextElement.Position = position;
+				textElement.Position = position;
+			}
+			else if (ElementType == ButtonElementType.ICON || ElementType == ButtonElementType.BOTH) {
+				spriteElement ??= new();
+
+				Vector2f psoition = new(0, Position.Y + (Size.Y / 2) - (spriteElement.GetGlobalBounds().Height / 2));
+
+				if (ElementAlign == ButtonElementAlign.LEFT) {
+					
+				}
+				else if (ElementAlign == ButtonElementAlign.MIDDLE) {
+					
+				}
+				else if (ElementAlign == ButtonElementAlign.RIGHT) {
+					
+				}
 			}
 		}
 

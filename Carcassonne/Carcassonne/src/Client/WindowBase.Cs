@@ -32,7 +32,7 @@ namespace nk.Carcassonne {
 
 		public static Dictionary<Cursor.CursorType, Cursor> Cursors { get; private set; } = [];
 
-		public static string  Language { get; set; } = "ko";
+		public static string           Language { get; set; } = "ko";
 		public static IDrawableObject? Clicking { get; set; } = null;
 		public static IDrawableObject? Hovering { get; set; } = null;
 
@@ -81,14 +81,17 @@ namespace nk.Carcassonne {
 				IDrawableObject obj = objects[index];
 
 				if (MouseListener.IsHovering(obj)) {
-					IDrawableObject hovering = obj;
+					IDrawableObject? hovering = obj.Ignore ? null : obj;
 
 					while (hovering is IMultyDrawableObject @object) {
 						for (int jndex = @object.AddedObjects.Count - 1; jndex >= 0; jndex--) {
 							IDrawableObject jovering = @object.AddedObjects[jndex];
 
 							if (MouseListener.IsHovering(jovering)) {
-								return jovering;
+                                if (!jovering.Ignore) {
+									hovering = jovering;
+									break;
+								}
 							}
 						}
 					}
@@ -124,8 +127,7 @@ namespace nk.Carcassonne {
 				DeltaTime = deltaTime;
 
                 if (totalTimeBeforUpdate >= TimeUntilUpdate) {
-
-					Hovering = GetHovering(NowScene.Objects);
+                    Hovering = GetHovering(NowScene.Objects);
 
                     Window.DispatchEvents();
 

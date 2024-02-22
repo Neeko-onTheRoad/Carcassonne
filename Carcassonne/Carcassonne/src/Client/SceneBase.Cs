@@ -7,6 +7,7 @@
 //====================================================================================================
 
 using SFML.Graphics;
+using SFML.Window;
 
 namespace nk.Carcassonne {
 	public abstract class SceneBase : Drawable {
@@ -22,8 +23,27 @@ namespace nk.Carcassonne {
 
 		void Drawable.Draw(RenderTarget _target, RenderStates _state) {
 			Objects.ForEach(i => {
-                _target.Draw(i, _state);
+				_target.Draw(i, _state);
 			});
+		}
+
+		protected EventHandler?                       CloseButtonEvent;
+		protected EventHandler<MouseMoveEventArgs>?   MouseMovedEvent;
+		protected EventHandler<MouseButtonEventArgs>? MouseButtonPressedEvent;
+		protected EventHandler<MouseButtonEventArgs>? MouseButtonReleasedEvent;
+
+		public SceneBase() {
+			WindowBase.Window.Closed              += CloseButtonEvent;
+			WindowBase.Window.MouseMoved          += MouseMovedEvent;
+			WindowBase.Window.MouseButtonPressed  += MouseButtonPressedEvent;
+			WindowBase.Window.MouseButtonReleased += MouseButtonReleasedEvent;
+		}
+
+		~SceneBase() {
+            WindowBase.Window.Closed              -= CloseButtonEvent;
+			WindowBase.Window.MouseMoved          -= MouseMovedEvent;
+			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;
+			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
 
 	}

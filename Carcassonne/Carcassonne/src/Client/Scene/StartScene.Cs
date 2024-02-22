@@ -21,7 +21,7 @@ namespace nk.Carcassonne {
 
 			TextObject title = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.075f),
-				Font            = Fonts.Normal,
+				Font            = Res.Fonts.Normal,
 				DisplayedString = "Not Carcassonne",
 				Position        = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.X * 0.05f)
 			};
@@ -31,7 +31,7 @@ namespace nk.Carcassonne {
 
 			TextObject comment = new() {
 				CharacterSize    = (uint)(WindowBase.WindowSize.X * 0.02f),
-				Font             = Fonts.Normal,
+				Font             = Res.Fonts.Normal,
 				Rotation         = -10,
 				DisplayedString  = st.Comment,
 				FillColor        = Colors.Yellow,
@@ -53,7 +53,7 @@ namespace nk.Carcassonne {
 
 			TextObject version = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
-				Font            = Fonts.Normal,
+				Font            = Res.Fonts.Normal,
 				FillColor       = new(255, 255, 255),
 				DisplayedString = WindowBase.ClientVersion
 			};
@@ -65,13 +65,21 @@ namespace nk.Carcassonne {
 
 			//====================================================================================| Connect Buttons
 
+			WindowTab connectWindow = new() {
+				Size     = new(WindowBase.WindowSize.X * 0.35f, WindowBase.WindowSize.X * 0.15f),
+				Movement = true,
+				Title    = st.Connect,
+				Show     = false
+			};
+
 			Button connectButton = new() {
 				Position     = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.Y * 0.6f),
 				Size         = new(WindowBase.WindowSize.X * 0.3f,  WindowBase.WindowSize.X * 0.05f),
 				Radius       = WindowBase.WindowSize.X * 0.01f,
-				TextElement  = new(st.Connect, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement  = new(st.Connect, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
-
+					connectWindow.ToCenter();
+					connectWindow.Show = true;
                 }
 			};
 			Objects.Add(connectButton);
@@ -82,7 +90,7 @@ namespace nk.Carcassonne {
 				Position      = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.Y * 0.71f),
 				Size          = new(WindowBase.WindowSize.X * 0.3f,  WindowBase.WindowSize.X * 0.05f),
 				Radius        = WindowBase.WindowSize.X * 0.01f,
-				TextElement   = new(st.Host, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement   = new(st.Host, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = () => {
                     
                 }
@@ -95,7 +103,7 @@ namespace nk.Carcassonne {
 				Position     = new(WindowBase.WindowSize.X * 0.05f,  WindowBase.WindowSize.Y * 0.82f),
 				Size         = new(WindowBase.WindowSize.X * 0.145f, WindowBase.WindowSize.X * 0.05f),
 				Radius       = WindowBase.WindowSize.X * 0.01f,
-				TextElement  = new(st.Option, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement  = new(st.Option, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
 
                 }
@@ -108,20 +116,14 @@ namespace nk.Carcassonne {
 				Position      = new(WindowBase.WindowSize.X * 0.205f,  WindowBase.WindowSize.Y * 0.82f),
 				Size          = new(WindowBase.WindowSize.X * 0.145f,  WindowBase.WindowSize.X * 0.05f),
 				Radius        = WindowBase.WindowSize.X * 0.01f,
-				TextElement   = new(st.Exit, Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement   = new(st.Exit, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = WindowBase.Window.Close
 			};
 			Objects.Add(exitButton);
 
-			//====================================================================================| Exit Buttons
-
-			WindowTab connectWindow = new() {
-				Size     = new(WindowBase.WindowSize.X * 0.35f, WindowBase.WindowSize.X * 0.15f),
-				Movement = true,
-				Title    = st.Connect
-			};
-			connectWindow.ToCenter();
-			Objects.Add(connectWindow);
+			Objects.Add(connectWindow);	
+			
+			//====================================================================================================| Initialize Event
 
         }
 	}

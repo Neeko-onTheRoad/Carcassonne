@@ -21,6 +21,7 @@
 	  <Content Include="Carcassonne\res\**">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+	  <Folder Include="Carcassonne\res\Client\Icons\" />
   </ItemGroup>
 
   <ItemGroup>
