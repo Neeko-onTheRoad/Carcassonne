@@ -10,6 +10,8 @@ using SFML.Graphics;
 
 namespace nk.Carcassonne {
 	public class Colors {
+		public readonly static ColorSF White = new(255, 255, 255);
+
 		public readonly static ColorSF LightPurple = new(120, 108, 198);
 		public readonly static ColorSF Purple      = new(101, 53,  136);
 		public readonly static ColorSF Yellow      = new(255, 247, 0  );

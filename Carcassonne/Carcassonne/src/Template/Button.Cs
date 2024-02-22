@@ -12,7 +12,10 @@ using SFML.Window;
 
 namespace nk.Carcassonne {
 	public enum ButtonElementType {
-		TEXT, ICON, BOTH
+		TEXT,
+		ICON,
+		BOTH_TEXT_FIRST,
+		BOTH_ICON_FIRST
 	}
 
 	public enum ButtonElementAlign {
@@ -21,13 +24,17 @@ namespace nk.Carcassonne {
 
 	public class Button : RoundedRectangleShape, IDrawableObject {
 
-		public ButtonElementType  ElementType    { get; set; } = ButtonElementType.TEXT;
-		public ButtonElementAlign ElementAlign   { get; set; } = ButtonElementAlign.MIDDLE;
-		public bool               Show           { get; set; } = true;
-		public bool               Ignore         { get; set; } = false;
-		public bool               CursorChanging { get; set; } = true;
-		public ColorSF            NormalColor    { get; set; } = Colors.LightPurple;
-		public ColorSF            HoveringColor  { get; set; } = Colors.Purple;
+		public ButtonElementType  ElementType              { get; set; } = ButtonElementType.TEXT;
+		public ButtonElementAlign ElementAlign             { get; set; } = ButtonElementAlign.MIDDLE;
+		public bool               Show                     { get; set; } = true;
+		public bool               Ignore                   { get; set; } = false;
+		public bool               CursorChanging           { get; set; } = true;
+		public ColorSF            NormalColor              { get; set; } = Colors.LightPurple;
+		public ColorSF            HoveringColor            { get; set; } = Colors.Purple;
+		public ColorSF            TextElementColor         { get; set; } = Colors.White;
+		public ColorSF            TextElementHoveringColor { get; set; } = Colors.LightPurple;
+		public ColorSF            IconElementColor         { get; set; } = Colors.White;
+		public ColorSF            IconElementHoveringColor { get; set; } = Colors.LightPurple;
 
 		public  bool Hovering { get; private set; } = false;
 		private byte Hovered = 2;
@@ -49,6 +56,13 @@ namespace nk.Carcassonne {
                     Color = Colors.Purple;
                     WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
 
+					if      (ElementType == ButtonElementType.TEXT) { if (TextElement != null) TextElement.FillColor = TextElementHoveringColor; }
+					else if (ElementType == ButtonElementType.ICON) { if (IconElement != null) IconElement.Color     = IconElementHoveringColor; }
+					else {
+						if (TextElement != null) TextElement.FillColor = TextElementHoveringColor;
+						if (IconElement != null) IconElement.Color     = IconElementHoveringColor;
+					}
+
 					Hovering = true;
 					Hovered  = 0;
 					Relesed  = 2;
@@ -64,6 +78,8 @@ namespace nk.Carcassonne {
 					Relesed  = 0;
                     Hovered  = 2;
 				}
+
+
 			};
 
 			MouseButtonPressedEvent = (_sender, _event) => {
@@ -99,19 +115,17 @@ namespace nk.Carcassonne {
 		public  Text? TextElement {
 			get => textElement;
 			set {
-				spriteElement = null;
-				textElement   = value;
-				needUpdate    = true;
+				textElement = value;
+				needUpdate  = true;
 			}
 		}
 
-		private Sprite? spriteElement;
-		public  Sprite? SpriteElement {
-			get => spriteElement;
+		private Sprite? iconElement;
+		public  Sprite? IconElement {
+			get => iconElement;
 			set {
-				textElement   = null;
-				spriteElement = value;
-				needUpdate    = true;
+				iconElement = value;
+				needUpdate  = true;
 			}
 		}
 
@@ -127,44 +141,62 @@ namespace nk.Carcassonne {
 		public Action OnClickEvent { get; set; } = () => {};
 
 		private void Rerender() {
-			if (ElementType == ButtonElementType.TEXT || ElementType == ButtonElementType.BOTH) {
-				textElement ??= new();
 
-				Vector2f position = new(0, Position.Y + (Size.Y / 2) - (textElement.CharacterSize * 0.55f));	
+			//============================================================| Text Update
 
-				if (ElementAlign == ButtonElementAlign.LEFT) {
-					position.X = Position.X + Margin;
-				}
-				else if (ElementAlign == ButtonElementAlign.MIDDLE) {
-					position.X = Position.X + ((Size.X - textElement.GetGlobalBounds().Width) * 0.49f);
-				}
-				else if (ElementAlign == ButtonElementAlign.RIGHT) {
-					position.X = Position.X + Size.X - textElement.GetGlobalBounds().Width - Margin;
-				}
+			if (
+				ElementType == ButtonElementType.TEXT            ||
+				ElementType == ButtonElementType.BOTH_TEXT_FIRST ||
+				ElementType == ButtonElementType.BOTH_ICON_FIRST
+			) {
+				if (textElement != null) {
 
-				textElement.Position = position;
+					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (textElement.CharacterSize * 0.55f));	
+
+					if (ElementAlign == ButtonElementAlign.LEFT) {
+						position.X = Position.X + Margin;
+					}
+					else if (ElementAlign == ButtonElementAlign.MIDDLE) {
+						position.X = Position.X + (Size.X - textElement.GetGlobalBounds().Width) * 0.49f;
+					}
+					else if (ElementAlign == ButtonElementAlign.RIGHT) {
+						position.X = Position.X + Size.X - textElement.GetGlobalBounds().Width - Margin;
+					}
+
+					textElement.Position  = position;
+					textElement.FillColor = TextElementColor;
+				}
 			}
-			else if (ElementType == ButtonElementType.ICON || ElementType == ButtonElementType.BOTH) {
-				spriteElement ??= new();
 
-				Vector2f psoition = new(0, Position.Y + (Size.Y / 2) - (spriteElement.GetGlobalBounds().Height / 2));
+			//============================================================| Icon Update
 
-				if (ElementAlign == ButtonElementAlign.LEFT) {
-					
-				}
-				else if (ElementAlign == ButtonElementAlign.MIDDLE) {
-					
-				}
-				else if (ElementAlign == ButtonElementAlign.RIGHT) {
-					
+			else if (
+				ElementType == ButtonElementType.ICON            ||
+				ElementType == ButtonElementType.BOTH_TEXT_FIRST ||
+				ElementType == ButtonElementType.BOTH_ICON_FIRST
+			) {
+				if (iconElement != null) {
+
+					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (iconElement.GetGlobalBounds().Height / 2));
+
+					if (ElementAlign == ButtonElementAlign.LEFT) {
+						position.X = Position.X + Margin;
+					}
+					else if (ElementAlign == ButtonElementAlign.MIDDLE) {
+						position.X = Position.X + (Size.X - iconElement.GetGlobalBounds().Width) * 0.5f;
+					}
+					else if (ElementAlign == ButtonElementAlign.RIGHT) {
+						position.X = Position.X + Size.X - iconElement.GetGlobalBounds().Width - Margin;
+					}
+
+					iconElement.Position = position;
+					iconElement.Color    = IconElementColor;
 				}
 			}
 		}
 
 		public new FloatRect GetGlobalBounds() {
-			if (Show) {
-				return base.GetGlobalBounds();
-			}
+			if (Show) return base.GetGlobalBounds();
 			else return new(0, 0, 0, 0);
 		}
 
@@ -178,11 +210,19 @@ namespace nk.Carcassonne {
 				needUpdate = false;
 			}
 
-			if (ElementType == ButtonElementType.TEXT) {
-				_target.Draw(TextElement);
-			}
-			else if (ElementType == ButtonElementType.ICON) {
-				
+			switch (ElementType) {
+				case ButtonElementType.TEXT: _target.Draw(TextElement); break;
+				case ButtonElementType.ICON: _target.Draw(iconElement); break;
+				case ButtonElementType.BOTH_TEXT_FIRST: {
+					_target.Draw(TextElement);
+					_target.Draw(iconElement);
+					break;
+				}
+				case ButtonElementType.BOTH_ICON_FIRST: {
+					_target.Draw(iconElement);
+					_target.Draw(TextElement);
+					break;
+				}
 			}
 		}
 	}

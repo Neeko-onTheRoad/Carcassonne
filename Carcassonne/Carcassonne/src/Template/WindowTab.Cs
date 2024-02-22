@@ -18,11 +18,11 @@ namespace nk.Carcassonne {
 
 		private bool needUpdate = true;
 
-		public bool Show		   { get; set; } = true;
-		public bool Ignore		 { get; set; } = false;
-		public bool Movement	   { get; set; } = true;
-		public bool Popupable	  { get; set; } = true;
-		public bool Closeable	  { get; set; } = true;
+		public bool Show           { get; set; } = true;
+		public bool Ignore         { get; set; } = false;
+		public bool Movement       { get; set; } = true;
+		public bool Popupable      { get; set; } = true;
+		public bool Closeable      { get; set; } = true;
 		public bool CursorChanging { get; set; } = false;
 
 		private string   title           = "";
@@ -133,11 +133,18 @@ namespace nk.Carcassonne {
 			if (Closeable) {
 				CloseButton ??= new();
 
-				CloseButton.Size	     = new(WindowBase.WindowSize.X * 0.028f, WindowBase.WindowSize.X * 0.019f);
-				CloseButton.Position     = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * 0.029f, WindowBase.WindowSize.X * 0.001f);
+				CloseButton.Size	     = new(WindowBase.WindowSize.X * 0.017f, WindowBase.WindowSize.X * 0.017f);
+				CloseButton.Position     = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * 0.02f, WindowBase.WindowSize.X * 0.002f);
 				CloseButton.Radius	     = WindowBase.WindowSize.X * 0.002f;
 				CloseButton.PointCount   = 1;
+				CloseButton.ElementType  = ButtonElementType.ICON;
+				CloseButton.ElementAlign = ButtonElementAlign.MIDDLE;
 				CloseButton.OnClickEvent = () => { Show = false; };
+				CloseButton.IconElement  = new(Res.Icons.X);
+				CloseButton.IconElement.Scale = new(
+					WindowBase.WindowSize.X * 0.01f / CloseButton.IconElement.GetGlobalBounds().Width,
+					WindowBase.WindowSize.X * 0.01f / CloseButton.IconElement.GetGlobalBounds().Height
+				);
 				AddedObjects.Add(CloseButton);
 			}
 
