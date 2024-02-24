@@ -9,10 +9,10 @@
 using SFML.Graphics;
 
 namespace nk.Carcassonne {
-	public interface IDrawableObject : Drawable, ICursorChangeable {
-		public bool Show   { get; set; }
-		public bool Ignore { get; set; }
+	public interface IDrawableObject : Drawable, ICursorChangeable, IPosition {
+		public bool Show           { get; set; }
+		public bool Ignore         { get; set; }
 
-		FloatRect GetGlobalBounds();
+		public FloatRect GetGlobalBounds();
 	}
 }

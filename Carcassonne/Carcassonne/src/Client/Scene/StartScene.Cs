@@ -21,7 +21,6 @@ namespace nk.Carcassonne {
 
 			TextObject title = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.075f),
-				Font            = Res.Fonts.Normal,
 				DisplayedString = "Not Carcassonne",
 				Position        = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.X * 0.05f)
 			};
@@ -31,7 +30,6 @@ namespace nk.Carcassonne {
 
 			TextObject comment = new() {
 				CharacterSize    = (uint)(WindowBase.WindowSize.X * 0.02f),
-				Font             = Res.Fonts.Normal,
 				Rotation         = -10,
 				DisplayedString  = st.Comment,
 				FillColor        = Colors.Yellow,
@@ -53,7 +51,6 @@ namespace nk.Carcassonne {
 
 			TextObject version = new() {
 				CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
-				Font            = Res.Fonts.Normal,
 				FillColor       = new(255, 255, 255),
 				DisplayedString = WindowBase.ClientVersion
 			};
@@ -63,7 +60,7 @@ namespace nk.Carcassonne {
 			);
 			Objects.Add(version);
 
-			//====================================================================================| Connect Buttons
+			//====================================================================================| Connect Window
 
 			WindowTab connectWindow = new() {
 				Size     = new(WindowBase.WindowSize.X * 0.35f, WindowBase.WindowSize.X * 0.15f),
@@ -71,12 +68,31 @@ namespace nk.Carcassonne {
 				Title    = st.Connect,
 				Show     = false
 			};
+			connectWindow.AddObject(
+				new TextObject() {
+					DisplayedString = st.Addres,
+					CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
+					Position        = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.025f)
+				}
+			);
+			connectWindow.AddObject(
+				new TextObject() {
+					DisplayedString = st.Port,
+					CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
+					Position        = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.055f)
+				}
+			);
+			connectWindow.AddObject(
+				
+			);
 
-			Button connectButton = new() {
+			//====================================================================================| Connect Button
+
+            Button connectButton = new() {
 				Position     = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.Y * 0.6f),
 				Size         = new(WindowBase.WindowSize.X * 0.3f,  WindowBase.WindowSize.X * 0.05f),
 				Radius       = WindowBase.WindowSize.X * 0.01f,
-				TextElement  = new(st.Connect, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement  = new(st.Connect, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
 					connectWindow.ToCenter();
 					connectWindow.Show = true;
@@ -90,7 +106,7 @@ namespace nk.Carcassonne {
 				Position      = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.Y * 0.71f),
 				Size          = new(WindowBase.WindowSize.X * 0.3f,  WindowBase.WindowSize.X * 0.05f),
 				Radius        = WindowBase.WindowSize.X * 0.01f,
-				TextElement   = new(st.Host, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement   = new(st.Host, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = () => {
                     
                 }
@@ -103,7 +119,7 @@ namespace nk.Carcassonne {
 				Position     = new(WindowBase.WindowSize.X * 0.05f,  WindowBase.WindowSize.Y * 0.82f),
 				Size         = new(WindowBase.WindowSize.X * 0.145f, WindowBase.WindowSize.X * 0.05f),
 				Radius       = WindowBase.WindowSize.X * 0.01f,
-				TextElement  = new(st.Option, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement  = new(st.Option, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
 
                 }
@@ -116,12 +132,12 @@ namespace nk.Carcassonne {
 				Position      = new(WindowBase.WindowSize.X * 0.205f,  WindowBase.WindowSize.Y * 0.82f),
 				Size          = new(WindowBase.WindowSize.X * 0.145f,  WindowBase.WindowSize.X * 0.05f),
 				Radius        = WindowBase.WindowSize.X * 0.01f,
-				TextElement   = new(st.Exit, Res.Fonts.Normal, (uint)(WindowBase.WindowSize.X * 0.025f)),
+				TextElement   = new(st.Exit, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = WindowBase.Window.Close
 			};
 			Objects.Add(exitButton);
 
-			Objects.Add(connectWindow);	
+			Objects.Add(connectWindow);
 			
 			//====================================================================================================| Initialize Event
 

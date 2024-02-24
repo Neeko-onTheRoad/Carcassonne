@@ -79,7 +79,6 @@ namespace nk.Carcassonne {
                     Hovered  = 2;
 				}
 
-
 			};
 
 			MouseButtonPressedEvent = (_sender, _event) => {
@@ -111,8 +110,8 @@ namespace nk.Carcassonne {
 			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
 
-		private Text? textElement;
-		public  Text? TextElement {
+		private TextObject? textElement;
+		public  TextObject? TextElement {
 			get => textElement;
 			set {
 				textElement = value;

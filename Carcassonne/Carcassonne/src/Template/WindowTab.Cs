@@ -34,8 +34,8 @@ namespace nk.Carcassonne {
 		public bool	 Draging	  { get; set; } = false;
 		public Vector2f DragStartPos { get; set; } = new(0f, 0f);
 
-		public List<IDrawableObject> Objects	  { get; set; } = [];
-		public List<IDrawableObject> AddedObjects { get; set; } = [];
+		public List<Tuple<IDrawableObject, Vector2f>> Objects	     { get; set; } = [];
+		public List<IDrawableObject>                  AddedObjects { get; set; } = [];
 
 		//====================================================================================================| Normal Shapes
 
@@ -85,6 +85,8 @@ namespace nk.Carcassonne {
 		//====================================================================================================| Rerender
 
 		private void Rerender() {
+			if (!Show) return;
+
 			AddedObjects.Clear();
 
 			//============================================================| Background
@@ -148,8 +150,11 @@ namespace nk.Carcassonne {
 				AddedObjects.Add(CloseButton);
 			}
 
-			Objects.ForEach(AddedObjects.Add);
-		}
+			//============================================================| Other Objects
+
+			if (Movement) Objects.ForEach(i => i.Item1.Position = i.Item2 + Position + new Vector2f(0f, WindowBase.WindowSize.X * 0.02f));
+            Objects.ForEach(i => AddedObjects.Add(i.Item1));
+        }
 
 		//====================================================================================================| Constructor
 
@@ -165,22 +170,6 @@ namespace nk.Carcassonne {
 			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
 
-				if (WindowBase.Hovering == TitleBar) { if (BorderHovered == 2) BorderHovered = 1; }
-				else if (BorderRelesed == 2) BorderRelesed = 1;
-
-				if (BorderHovered == 1) {
-					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
-
-					BorderHovered = 0;
-					BorderRelesed = 2;
-				}
-				if (BorderRelesed == 1) {
-					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
-
-					BorderRelesed = 0;
-					BorderHovered = 2;
-				}
-
 				if (Draging && Movement) {
 					Vector2f updatedPosition = DragStartPos + (Vector2f)MouseListener.DragDelta;
 					Vector2f positionLimit   = (Vector2f)WindowBase.WindowSize - Size;
@@ -192,6 +181,25 @@ namespace nk.Carcassonne {
 					else if (updatedPosition.X > positionLimit.X) updatedPosition = new(positionLimit.X, updatedPosition.Y);
 
 					Position	= updatedPosition;
+					return;
+				}
+
+				else if (WindowBase.Hovering == TitleBar) { if (BorderHovered == 2) BorderHovered = 1; }
+				else if (BorderRelesed == 2) BorderRelesed = 1;
+
+				if (BorderHovered == 1) {
+					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
+
+					BorderHovered = 0;
+					BorderRelesed = 2;
+					return;
+				}
+				if (BorderRelesed == 1) {
+					WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
+
+					BorderRelesed = 0;
+					BorderHovered = 2;
+					return;
 				}
 			};
 
@@ -240,7 +248,9 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Override
 
-		public void AddObject(IDrawableObject _object) => AddedObjects.Add(_object);
+		public void AddObject(IDrawableObject _object) {
+			Objects.Add(new(_object, _object.Position));
+        }
 
 		public FloatRect GetGlobalBounds() {
 			if (Show) return new(
@@ -257,9 +267,9 @@ namespace nk.Carcassonne {
 				Rerender();
 				needUpdate = false;
 			}
-
+			
 			AddedObjects.ForEach(i => {
-				_target.Draw(i, _states);
+                _target.Draw(i, _states);
 			});
 		}
 

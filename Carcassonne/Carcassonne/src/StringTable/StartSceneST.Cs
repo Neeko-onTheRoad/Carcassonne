@@ -19,7 +19,10 @@ namespace nk.Carcassonne {
 			"Click here to Get 1M robux", "Don't play Valorant", "Josh Hutcherson - Whistle"
 		];
 
-		public StartSceneST(string _lang) {
+		public readonly string Addres = "Addres";
+		public readonly string Port   = "Port";
+
+		public StartSceneST(string _lang){
 
 			{ Random rand = new();
 				Comment = Comments[rand.Next(0, Comments.Length)];
@@ -30,6 +33,9 @@ namespace nk.Carcassonne {
 				Host    = "호스트";
 				Option  = "설정";
 				Exit    = "종료";
+
+				Addres = "주소";
+				Port   = "포트";
 			}
 		}
 	}
