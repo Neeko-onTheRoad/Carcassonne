@@ -8,7 +8,7 @@
 
 using SFML.System;
 
-namespace nk {
+namespace nk.Carcassonne {
 	public interface IDragable {
 		public bool     Draging      { get; protected set; }
 		public Vector2f DragStartPos { get; protected set; }

@@ -11,6 +11,8 @@ using SFML.Graphics;
 using SFML.Window;
 
 namespace nk.Carcassonne {
+	//====================================================================================================| Flagss
+
 	public enum ButtonElementType {
 		TEXT,
 		ICON,
@@ -24,11 +26,10 @@ namespace nk.Carcassonne {
 
 	public class Button : RoundedRectangleShape, IDrawableObject {
 
+		//====================================================================================================| State, Flags
+
 		public ButtonElementType  ElementType              { get; set; } = ButtonElementType.TEXT;
 		public ButtonElementAlign ElementAlign             { get; set; } = ButtonElementAlign.MIDDLE;
-		public bool               Show                     { get; set; } = true;
-		public bool               Ignore                   { get; set; } = false;
-		public bool               CursorChanging           { get; set; } = true;
 		public ColorSF            NormalColor              { get; set; } = Colors.LightPurple;
 		public ColorSF            HoveringColor            { get; set; } = Colors.Purple;
 		public ColorSF            TextElementColor         { get; set; } = Colors.White;
@@ -44,7 +45,11 @@ namespace nk.Carcassonne {
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
 
+		//====================================================================================================| Constructor
+
 		public Button() {
+			Ignore = false;
+			CursorChanging = true;
             
             MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
@@ -53,7 +58,7 @@ namespace nk.Carcassonne {
 				else if (Relesed == 2) { Relesed = 1;}
 
                 if (Hovered == 1) {
-                    Color = Colors.Purple;
+                    FillColor = Colors.Purple;
                     WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Hand));
 
 					if      (ElementType == ButtonElementType.TEXT) { if (TextElement != null) TextElement.FillColor = TextElementHoveringColor; }
@@ -68,7 +73,7 @@ namespace nk.Carcassonne {
 					Relesed  = 2;
 				}
 				if (Relesed == 1) {
-					Color = Colors.LightPurple;
+					FillColor = Colors.LightPurple;
 
 					if (!(WindowBase.Hovering ?? new EmptyObject()).CursorChanging) {
 						WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
@@ -97,18 +102,22 @@ namespace nk.Carcassonne {
 				}
 			};
 
-			WindowBase.Window.MouseMoved          += MouseMovedEvent;
+			WindowBase.Window.MouseMoved            += MouseMovedEvent;
 			WindowBase.Window.MouseButtonPressed  += MouseButtonPressedEvent;
 			WindowBase.Window.MouseButtonReleased += MouseButtonReleasedEvent;
 
-			Color = Colors.LightPurple;
+			FillColor = Colors.LightPurple;
 		}
+
+		//====================================================================================================| Destructor
 
 		~Button() {
             WindowBase.Window.MouseMoved          -= MouseMovedEvent;
 			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;
 			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
+
+		//====================================================================================================| Members
 
 		private TextObject? textElement;
 		public  TextObject? TextElement {
@@ -138,6 +147,8 @@ namespace nk.Carcassonne {
 		}
 
 		public Action OnClickEvent { get; set; } = () => {};
+
+		//====================================================================================================| Rerender
 
 		private void Rerender() {
 
@@ -193,6 +204,8 @@ namespace nk.Carcassonne {
 				}
 			}
 		}
+
+		//====================================================================================================| Overrides
 
 		public new FloatRect GetGlobalBounds() {
 			if (Show) return base.GetGlobalBounds();

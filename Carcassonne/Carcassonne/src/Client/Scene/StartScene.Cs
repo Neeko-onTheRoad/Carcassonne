@@ -82,13 +82,10 @@ namespace nk.Carcassonne {
 					Position        = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.055f)
 				}
 			);
-			connectWindow.AddObject(
-				
-			);
 
 			//====================================================================================| Connect Button
 
-            Button connectButton = new() {
+			Button connectButton = new() {
 				Position     = new(WindowBase.WindowSize.X * 0.05f, WindowBase.WindowSize.Y * 0.6f),
 				Size         = new(WindowBase.WindowSize.X * 0.3f,  WindowBase.WindowSize.X * 0.05f),
 				Radius       = WindowBase.WindowSize.X * 0.01f,
@@ -96,7 +93,10 @@ namespace nk.Carcassonne {
 				OnClickEvent = () => {
 					connectWindow.ToCenter();
 					connectWindow.Show = true;
-                }
+				},
+				FillColor = new(0, 0, 0, 0),
+				OutlineColor = new(255, 255, 255),
+				OutlineThickness = 5f
 			};
 			Objects.Add(connectButton);
 
@@ -109,7 +109,7 @@ namespace nk.Carcassonne {
 				TextElement   = new(st.Host, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent  = () => {
                     
-                }
+				}
 			};
 			Objects.Add(hostButton);
 
@@ -122,7 +122,7 @@ namespace nk.Carcassonne {
 				TextElement  = new(st.Option, (uint)(WindowBase.WindowSize.X * 0.025f)),
 				OnClickEvent = () => {
 
-                }
+				}
 			};
 			Objects.Add(optionButton);
 
@@ -141,6 +141,6 @@ namespace nk.Carcassonne {
 			
 			//====================================================================================================| Initialize Event
 
-        }
+		}
 	}
 }

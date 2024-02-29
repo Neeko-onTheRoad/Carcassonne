@@ -13,7 +13,7 @@ namespace nk.Carcassonne {
 		public readonly string Option  = "Option";
 		public readonly string Exit    = "Exit";
 
-		public readonly string Comment;
+		public  readonly string Comment;
 		private readonly string[] Comments = [
 			"It's free!", "How to make a nuclear bomb", "I need AK-47", "Hello, World!",
 			"Click here to Get 1M robux", "Don't play Valorant", "Josh Hutcherson - Whistle"

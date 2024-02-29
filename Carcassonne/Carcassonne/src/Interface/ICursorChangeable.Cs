@@ -6,7 +6,7 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-namespace nk {
+namespace nk.Carcassonne {
 	public interface ICursorChangeable {
 		public bool CursorChanging { get; set; }
 	}
