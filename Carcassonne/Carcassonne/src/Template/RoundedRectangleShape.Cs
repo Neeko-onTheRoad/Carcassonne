@@ -62,7 +62,7 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Rerender
 
-		private void SetEdgePoint(
+		private void SetEdgePoint (
 			VertexArray _target,
 			Vector2f    _position,
 			float       _radius,
@@ -76,189 +76,227 @@ namespace nk.Carcassonne {
 
 			for (ushort i = 1; i <= pointCount; i++) {
 				_target[(ushort)_pointPointer++] = new(new(
-					_position.X + ,
-					_position.Y + 
+					_position.X + (_xAxisInverse ? _radius : -_radius) -
+					(_xAxisInverse ? _radius : -_radius) * (float)Math.Sin(Math.PI * (_inversDirection ? (i + PointCount + 1) : i) / (2 * PointCount + 2)),
+
+					_position.Y + (_yAxisInverse ? _radius : -_radius) * (_inversDirection ? -1 : 1) -
+					(_yAxisInverse ? _radius : -_radius) * (float)Math.Cos(Math.PI * (_inversDirection ? (i + PointCount + 1) : i) / (2 * PointCount + 2))
+				), _color);
+			}
+		}
+
+		private void SetEdgePointDouble (
+			VertexArray _target,
+			Vector2f    _position,
+			float       _radius,
+			float       _offset,
+			bool        _xAxisInverse,
+			bool        _yAxisInverse,
+			bool        _inversDirection,
+			ColorSF     _color,
+			ref uint    _pointPointer
+		) {
+			if (_inversDirection) _yAxisInverse = !_yAxisInverse;
+
+			float outLine = _radius + _offset;
+			float xPos    = _position.X - (_xAxisInverse ? _offset : -_offset);
+			float yPos    = _position.Y - (_yAxisInverse ? _offset : -_offset) * (_inversDirection ? -1 : 1);
+
+			for (ushort i = 1; i <= pointCount; i++) {
+				_target[(ushort)_pointPointer++] = new(new(
+					_position.X + (_xAxisInverse ? _radius : -_radius) -
+					(_xAxisInverse ? _radius : -_radius) * (float)Math.Sin(Math.PI * (_inversDirection ? (i + PointCount + 1) : i) / (2 * PointCount + 2)),
+
+					_position.Y + (_yAxisInverse ? _radius : -_radius) * (_inversDirection ? -1 : 1) -
+					(_yAxisInverse ? _radius : -_radius) * (float)Math.Cos(Math.PI * (_inversDirection ? (i + PointCount + 1) : i) / (2 * PointCount + 2))
+				), _color);
+
+				_target[(ushort)_pointPointer++] = new(new(
+					xPos + (_xAxisInverse ? outLine : -outLine) -
+					(_xAxisInverse ? outLine : -outLine) * (float)Math.Sin(Math.PI * (_inversDirection ? (i + PointCount + 1) : i) / (2 * PointCount + 2)),
+
+					yPos + (_yAxisInverse ? outLine : -outLine) * (_inversDirection ? -1 : 1) -
+					(_yAxisInverse ? outLine : -outLine) * (float)Math.Cos(Math.PI * (_inversDirection ? (i + PointCount + 1) : i) / (2 * PointCount + 2))
 				), _color);
 			}
 		}
 
 		private void Rerender() {
+			//PointCount = 10;
 			
 			//============================================================| Main Element Update
-		
+
             vertexs = new(PrimitiveType.TriangleFan, 8u + (4u * PointCount));
 
 			uint pointPointer = 0;
 
-			vertexs[0] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X + Radius,
 				Position.Y
 			), FillColor);
-			vertexs[1] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X + Size.X - Radius,
 				Position.Y
 			), FillColor);
 
-			for (ushort i = 1; i <= pointCount; i++) {
-				vertexs[1u + i] = new(new(
-					Position.X + Size.X - Radius + 
-						Radius * (float)Math.Sin(Math.PI * i / (2 * PointCount + 2)),
-					Position.Y + Radius - 
-						Radius * (float)Math.Cos(Math.PI * i / (2 * PointCount + 2))
-				), FillColor);
-			}
+			SetEdgePoint(
+				vertexs, new Vector2f(Position.X + Size.X, Position.Y), Radius,
+				false, true, false, FillColor,
+				ref pointPointer
+			);
 
-			vertexs[2u + PointCount] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X + Size.X,
 				Position.Y + Radius
 			), FillColor);
-			vertexs[3u + PointCount] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X + Size.X,
 				Position.Y + Size.Y - Radius
 			), FillColor);
 			
-			for (ushort i = 1; i <= pointCount; i++) {
-				vertexs[3u + PointCount + i] = new(new(
-					Position.X + Size.X - Radius + 
-						Radius * (float)Math.Sin(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2)),
-					Position.Y + Size.Y - Radius -
-						Radius * (float)Math.Cos(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2))
-				), FillColor);
-			}
+			SetEdgePoint(
+				vertexs, new Vector2f(Position.X + Size.X, Position.Y + Size.Y), Radius,
+				false, false, true, FillColor,
+				ref pointPointer
+			);
 
-			vertexs[4u + (2u * PointCount)] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X + Size.X - Radius,
 				Position.Y + Size.Y
 			), FillColor);
-			vertexs[5u + (2u * PointCount)] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X + Radius,
 				Position.Y + Size.Y
 			), FillColor);
 
-			for (ushort i = 1; i <= pointCount; i++) {
-				vertexs[5u + (2u * PointCount) + i] = new(new(
-					Position.X + Radius -
-						Radius * (float)Math.Sin(Math.PI * i / (2 * PointCount + 2)),
-					Position.Y + Size.Y - Radius +
-						Radius * (float)Math.Cos(Math.PI * i / (2 * PointCount + 2))
-				), FillColor);
-			}
+			SetEdgePoint(
+				vertexs, new Vector2f(Position.X, Position.Y + Size.Y), Radius,
+				true, false, false, FillColor,
+				ref pointPointer
+			);
 
-			vertexs[6u + (3u * PointCount)] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X,
 				Position.Y + Size.Y - Radius
 			), FillColor);
-			vertexs[7u + (3u * PointCount)] = new(new(
+			vertexs[pointPointer++] = new(new(
 				Position.X,
 				Position.Y + Radius
 			), FillColor);
 			
-			for (ushort i = 1; i <= pointCount; i++) {
-				vertexs[7u + (3u * PointCount) + i] = new(new(
-					Position.X + Radius -
-						Radius * (float)Math.Sin(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2)),
-					Position.Y + Radius +
-						Radius * (float)Math.Cos(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2))
-				), FillColor);
-			}
+			SetEdgePoint(
+				vertexs, new Vector2f(Position.X, Position.Y), Radius,
+				true, true, true, FillColor,
+				ref pointPointer
+			);
 
 			//============================================================| In Outline Update
+			PointCount = 3;
 
-			outline = new(PrimitiveType.Points, 16u + (8u * PointCount));
+			outline = new(PrimitiveType.TriangleStrip, 18u + (8u * PointCount));
+			pointPointer = 0;
 
-			outline[0] = new(new(
+			outline[pointPointer++] = new(new(
 				Position.X + Radius,
 				Position.Y
 			), OutlineColor);
-			outline[1] = new(new(
-				Position.X + Size.X - Radius,
-				Position.Y
-			), OutlineColor);
-
-			for (ushort i = 1; i <= pointCount; i++) {
-				outline[1u + i] = new(new(
-					Position.X + Size.X - Radius + 
-					Radius * (float)Math.Sin(Math.PI * i / (2 * PointCount + 2)),
-
-					Position.Y + Radius - 
-					Radius * (float)Math.Cos(Math.PI * i / (2 * PointCount + 2))
-				), OutlineColor);
-			}
-
-			outline[2u + PointCount] = new(new(
-				Position.X + Size.X,
-				Position.Y + Radius
-			), OutlineColor);
-			outline[3u + PointCount] = new(new(
-				Position.X + Size.X,
-				Position.Y + Size.Y - Radius
-			), OutlineColor);
-			
-			for (ushort i = 1; i <= pointCount; i++) {
-				outline[3u + PointCount + i] = new(new(
-					Position.X + Size.X - Radius + 
-					Radius * (float)Math.Sin(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2)),
-
-					Position.Y + Size.Y - Radius -
-					Radius * (float)Math.Cos(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2))
-				), OutlineColor);
-			}
-
-			outline[4u + (2u * PointCount)] = new(new(
-				Position.X + Size.X - Radius,
-				Position.Y + Size.Y
-			), OutlineColor);
-			outline[5u + (2u * PointCount)] = new(new(
-				Position.X + Radius,
-				Position.Y + Size.Y
-			), OutlineColor);
-
-			for (ushort i = 1; i <= pointCount; i++) {
-				outline[5u + (2u * PointCount) + i] = new(new(
-					Position.X + Radius -
-					Radius * (float)Math.Sin(Math.PI * i / (2 * PointCount + 2)),
-
-					Position.Y + Size.Y - Radius +
-					Radius * (float)Math.Cos(Math.PI * i / (2 * PointCount + 2))
-				), OutlineColor);
-			}
-
-			outline[6u + (3u * PointCount)] = new(new(
-				Position.X,
-				Position.Y + Size.Y - Radius
-			), OutlineColor);
-			outline[7u + (3u * PointCount)] = new(new(
-				Position.X,
-				Position.Y + Radius
-			), OutlineColor);
-			
-			for (ushort i = 1; i <= pointCount; i++) {
-				outline[7u + (3u * PointCount) + i] = new(new(
-					Position.X + Radius -
-					Radius * (float)Math.Sin(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2)),
-
-					Position.Y + Radius +
-					Radius * (float)Math.Cos(Math.PI * (i + PointCount + 1) / (2 * PointCount + 2))
-				), OutlineColor);
-			}
-
-			//============================================================| Out Outline Update
-
-			outline[8u + (4u * PointCount)] = new(new(
+			outline[pointPointer++] = new(new(
 				Position.X + Radius,
 				Position.Y - OutlineThickness
 			), OutlineColor);
 
-			for (ushort i = 1; i <= pointCount; i++) {
-				outline[8u + (4u * PointCount) + i] = new(new(
-					Position.X + Radius - 
-					(Radius + OutlineThickness) * (float)Math.Sin(Math.PI * i / (2 * PointCount + 2)),
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X - Radius,
+				Position.Y
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X - Radius,
+				Position.Y - OutlineThickness
+			), OutlineColor);
 
-					Position.Y + Radius - 
-					(Radius + OutlineThickness) * (float)Math.Cos(Math.PI * i / (2 * PointCount + 2))
-				), OutlineColor);
-			}
+			SetEdgePointDouble(
+				outline, new Vector2f(Position.X + Size.X, Position.Y), Radius, OutlineThickness,
+				false, true, false, OutlineColor,
+				ref pointPointer
+			);
 
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X,
+				Position.Y + Radius
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X + OutlineThickness,
+				Position.Y + Radius
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X,
+				Position.Y + Size.Y - Radius
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X + OutlineThickness,
+				Position.Y + Size.Y - Radius
+			), OutlineColor);
+			
+			SetEdgePointDouble(
+				outline, new Vector2f(Position.X + Size.X, Position.Y + Size.Y), Radius, OutlineThickness,
+				false, false, true, OutlineColor,
+				ref pointPointer
+			);
+
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X - Radius,
+				Position.Y + Size.Y
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Size.X - Radius,
+				Position.Y + Size.Y + OutlineThickness
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Radius,
+				Position.Y + Size.Y
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Radius,
+				Position.Y + Size.Y + OutlineThickness
+			), OutlineColor);
+
+			SetEdgePointDouble(
+				outline, new Vector2f(Position.X, Position.Y + Size.Y), Radius, OutlineThickness,
+				true, false, false, OutlineColor,
+				ref pointPointer
+			);
+
+			outline[pointPointer++] = new(new(
+				Position.X,
+				Position.Y + Size.Y - Radius
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X - OutlineThickness,
+				Position.Y + Size.Y - Radius
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X,
+				Position.Y + Radius
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X - OutlineThickness,
+				Position.Y + Radius
+			), OutlineColor);
+			
+			SetEdgePointDouble(
+				outline, new Vector2f(Position.X, Position.Y), Radius, OutlineThickness,
+				true, true, true, OutlineColor,
+				ref pointPointer
+			);
+
+			outline[pointPointer++] = new(new(
+				Position.X + Radius,
+				Position.Y
+			), OutlineColor);
+			outline[pointPointer++] = new(new(
+				Position.X + Radius,
+				Position.Y - OutlineThickness
+			), OutlineColor);
 		}
 
 		//====================================================================================================| Override
