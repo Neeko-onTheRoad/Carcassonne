@@ -7,7 +7,6 @@
 //====================================================================================================
 
 using SFML.Graphics;
-using SFML.System;
 using SFML.Window;
 
 namespace nk.Carcassonne {
@@ -24,6 +23,9 @@ namespace nk.Carcassonne {
 			}
 		}
 
+		private byte Hovered  = 2;
+		private byte Released = 0;
+
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
@@ -35,7 +37,15 @@ namespace nk.Carcassonne {
 			CursorChanging = true;
 
 			MouseMovedEvent = (_sender, _event) => {
-				
+				if (!Show) return;
+
+				if (WindowBase.Hovering == this) { if (Hovered == 2) Hovered = 1; }
+				else if (Released == 2) { Released = 1; }
+
+				if (Hovered == 1) {
+					FillColor = Colors.TransparentBlack;
+					//WindowBase.Window.SetMouseCursor();
+				}
 			};
 
 			MouseButtonPressedEvent = (_sender, _event) => {

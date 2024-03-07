@@ -76,8 +76,8 @@ namespace nk.Carcassonne {
 
 			for (ushort i = 1; i <= pointCount; i++) {
 				_target[(ushort)_pointPointer++] = new(new(
-					_position.X + ,
-					_position.Y + 
+					_position.X ,
+					_position.Y 
 				), _color);
 			}
 		}

@@ -38,8 +38,8 @@ namespace nk.Carcassonne {
 		public ColorSF            IconElementHoveringColor { get; set; } = Colors.LightPurple;
 
 		public  bool Hovering { get; private set; } = false;
-		private byte Hovered = 2;
-		private byte Relesed = 0;
+		private byte Hovered  = 2;
+		private byte Released = 0;
 
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
@@ -55,7 +55,7 @@ namespace nk.Carcassonne {
 				if (!Show) return;
 
                 if (WindowBase.Hovering == this) { if (Hovered == 2) Hovered = 1; }
-				else if (Relesed == 2) { Relesed = 1;}
+				else if (Released == 2) { Released = 1;}
 
                 if (Hovered == 1) {
                     FillColor = Colors.Purple;
@@ -70,7 +70,7 @@ namespace nk.Carcassonne {
 
 					Hovering = true;
 					Hovered  = 0;
-					Relesed  = 2;
+					Released = 2;
 				}
 				if (Relesed == 1) {
 					FillColor = Colors.LightPurple;
@@ -80,7 +80,7 @@ namespace nk.Carcassonne {
 					}
 
                     Hovering = false;
-					Relesed  = 0;
+					Released = 0;
                     Hovered  = 2;
 				}
 
