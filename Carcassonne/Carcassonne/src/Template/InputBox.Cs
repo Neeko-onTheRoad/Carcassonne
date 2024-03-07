@@ -8,6 +8,7 @@
 
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace nk.Carcassonne {
 	public class InputBox : RoundedRectangleShape, IDrawableObject {
@@ -23,11 +24,42 @@ namespace nk.Carcassonne {
 			}
 		}
 
+		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
+		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
+		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
+
 		//====================================================================================================| Constructor
 
 		public InputBox() {
-			
+			Ignore = false;
+			CursorChanging = true;
+
+			MouseMovedEvent = (_sender, _event) => {
+				
+			};
+
+			MouseButtonPressedEvent = (_sender, _event) => {
+				
+			};
+
+			MouseButtonReleasedEvent = (_sender, _event) => {
+				
+			};
+
+			WindowBase.Window.MouseMoved          += MouseMovedEvent;
+			WindowBase.Window.MouseButtonPressed  += MouseButtonPressedEvent;
+			WindowBase.Window.MouseButtonReleased += MouseButtonReleasedEvent;
 		}
+
+		//====================================================================================================| Desstructor
+
+		~InputBox() {
+			WindowBase.Window.MouseMoved          -= MouseMovedEvent;
+			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;
+			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
+		}
+
+		//====================================================================================================| Rerender
 
 		//====================================================================================================| Override
 

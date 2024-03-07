@@ -102,7 +102,7 @@ namespace nk.Carcassonne {
 				}
 			};
 
-			WindowBase.Window.MouseMoved            += MouseMovedEvent;
+			WindowBase.Window.MouseMoved          += MouseMovedEvent;
 			WindowBase.Window.MouseButtonPressed  += MouseButtonPressedEvent;
 			WindowBase.Window.MouseButtonReleased += MouseButtonReleasedEvent;
 
