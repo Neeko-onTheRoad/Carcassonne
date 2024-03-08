@@ -6,8 +6,6 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using SFML.Graphics;
-
 namespace nk.Carcassonne {
 	public class Colors {
 		public readonly static ColorSF White     = new(255, 255, 255);
