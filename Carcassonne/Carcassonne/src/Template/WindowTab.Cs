@@ -140,7 +140,7 @@ namespace nk.Carcassonne {
 				CloseButton.Radius	     = WindowBase.WindowSize.X * 0.002f;
 				CloseButton.PointCount   = 1;
 				CloseButton.ElementType  = ButtonElementType.ICON;
-				CloseButton.ElementAlign = ButtonElementAlign.MIDDLE;
+				CloseButton.ElementAlign = ElementAlign.MIDDLE;
 				CloseButton.OnClickEvent = () => { Show = false; };
 				CloseButton.IconElement  = new(Res.Icons.X);
 				CloseButton.IconElement.Scale = new(

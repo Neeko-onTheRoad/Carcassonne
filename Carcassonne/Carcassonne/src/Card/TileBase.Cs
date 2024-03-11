@@ -23,6 +23,6 @@ namespace nk.Carcassonne {
 		public VectorDirection4<Tuple<SideType, VectorDirection4<bool>>>
 			Side { get; protected set; } = new();
 
-		
+			
 	}
 }

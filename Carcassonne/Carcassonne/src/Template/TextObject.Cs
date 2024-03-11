@@ -24,5 +24,7 @@ namespace nk.Carcassonne {
             if (!Show) return;
 			base.Draw(_target, _state);
 		}
+
+		WindowBase.
 	}
 }

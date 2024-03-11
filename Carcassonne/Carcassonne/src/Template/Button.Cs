@@ -20,7 +20,7 @@ namespace nk.Carcassonne {
 		BOTH_ICON_FIRST
 	}
 
-	public enum ButtonElementAlign {
+	public enum ElementAlign {
 		LEFT, MIDDLE, RIGHT
 	}
 
@@ -28,14 +28,17 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| State, Flags
 
-		public ButtonElementType  ElementType              { get; set; } = ButtonElementType.TEXT;
-		public ButtonElementAlign ElementAlign             { get; set; } = ButtonElementAlign.MIDDLE;
-		public ColorSF            NormalColor              { get; set; } = Colors.LightPurple;
-		public ColorSF            HoveringColor            { get; set; } = Colors.Purple;
-		public ColorSF            TextElementColor         { get; set; } = Colors.White;
-		public ColorSF            TextElementHoveringColor { get; set; } = Colors.LightPurple;
-		public ColorSF            IconElementColor         { get; set; } = Colors.White;
-		public ColorSF            IconElementHoveringColor { get; set; } = Colors.LightPurple;
+		private ColorSF           backgroundIdleColor      = Colors.LightPurple;
+		private ColorSF           backgroundHoveringColor  = Colors.Purple;
+		private ColorSF           textElementIdleColor     = Colors.White;
+		private ColorSF           textElementHoveringColor = Colors.White;
+		private ColorSF           iconElementIdleColor     = Colors.White;
+		private ColorSF           iconElementHoveringColor = Colors.White;
+		private ButtonElementType elementType              = ButtonElementType.TEXT;
+		private ElementAlign      elementAlign             = ElementAlign.MIDDLE;
+		private TextObject?       textElement              = null;
+		private Sprite?           iconElement              = null;
+		private float             margin                   = WindowBase.WindowSize.X * 0.02f;
 
 		public  bool Hovering { get; private set; } = false;
 		private byte Hovered  = 2;
@@ -45,6 +48,99 @@ namespace nk.Carcassonne {
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonReleasedEvent;
 
+
+		//====================================================================================================| Propertys
+
+		public ColorSF BackgroundIdleColor {
+			get => backgroundIdleColor;
+			set {
+				backgroundIdleColor = value;
+				needUpdate          = true;
+			}
+		}
+
+		public ColorSF BackgroundHoveringColor {
+			get => backgroundHoveringColor;
+			set {
+				backgroundHoveringColor = value;
+				needUpdate              = true;
+			}
+		}
+
+		public ColorSF TextElementIdleColor {
+			get => textElementIdleColor;
+			set {
+				TextElementIdleColor = value;
+				needUpdate           = true;
+			}
+		}
+
+		public ColorSF TextElementHoveringColor {
+			get => textElementHoveringColor;
+			set {
+				textElementHoveringColor = value;
+				needUpdate               = true;
+			}
+		}
+		
+		public ColorSF IconElementIdleColor {
+			get => iconElementIdleColor;
+			set {
+				iconElementIdleColor = value;
+				needUpdate           = true;
+			}
+		}
+
+		public ColorSF IconElementHoveringColor {
+			get => iconElementHoveringColor;
+			set {
+				iconElementHoveringColor = value;
+				needUpdate               = true;
+			}
+		}
+
+		public ButtonElementType ElementType { 
+			get => elementType;
+			set {
+				elementType = value;
+				needUpdate  = true;
+			}
+		}
+		
+		public ElementAlign ElementAlign {
+			get => elementAlign;
+			set {
+				elementAlign = value;
+				needUpdate   = true;
+			}
+		} 
+
+		public  TextObject? TextElement {
+			get => textElement;
+			set {
+				textElement = value;
+				needUpdate  = true;
+			}
+		}
+
+		public  Sprite? IconElement {
+			get => iconElement;
+			set {
+				iconElement = value;
+				needUpdate  = true;
+			}
+		}
+
+		public  float Margin {
+			get => margin;
+			set {
+				margin     = value;
+				needUpdate = true;
+			}
+		}
+
+		public Action OnClickEvent { get; set; } = () => {};
+
 		//====================================================================================================| Constructor
 
 		public Button() {
@@ -52,7 +148,7 @@ namespace nk.Carcassonne {
 			CursorChanging = true;
             
             MouseMovedEvent = (_sender, _event) => {
-				if (!Show) return;
+				if (!Show || Ignore) return;
 
                 if (WindowBase.Hovering == this) { if (Hovered == 2) Hovered = 1; }
 				else if (Released == 2) { Released = 1;}
@@ -72,11 +168,18 @@ namespace nk.Carcassonne {
 					Hovered  = 0;
 					Released = 2;
 				}
-				if (Relesed == 1) {
+				if (Released == 1) {
 					FillColor = Colors.LightPurple;
 
 					if (!(WindowBase.Hovering ?? new EmptyObject()).CursorChanging) {
 						WindowBase.Window.SetMouseCursor(new(Cursor.CursorType.Arrow));
+					}
+
+					if      (ElementType == ButtonElementType.TEXT) { if (TextElement != null) TextElement.FillColor = TextElementIdleColor; }
+					else if (ElementType == ButtonElementType.ICON) { if (IconElement != null) IconElement.Color     = IconElementIdleColor; }
+					else {
+						if (TextElement != null) TextElement.FillColor = TextElementIdleColor;
+						if (IconElement != null) IconElement.Color     = IconElementIdleColor;
 					}
 
                     Hovering = false;
@@ -87,17 +190,17 @@ namespace nk.Carcassonne {
 			};
 
 			MouseButtonPressedEvent = (_sender, _event) => {
-				if (!Show) return;
+				if (!Show || Ignore) return;
 				if (_event.Button == Mouse.Button.Left) {
                     if (WindowBase.Hovering == this) WindowBase.Clicking = this;
 				}
 			};
 
 			MouseButtonReleasedEvent = (_sender, _event) => {
-				if (!Show) return;
 				if (_event.Button == Mouse.Button.Left) {
                     if (WindowBase.Clicking == this && WindowBase.Hovering == this) {
-                        OnClickEvent();
+                        if (Show && !Ignore) OnClickEvent();
+						WindowBase.Clicking = null;
                     }
 				}
 			};
@@ -117,37 +220,6 @@ namespace nk.Carcassonne {
 			WindowBase.Window.MouseButtonReleased -= MouseButtonReleasedEvent;
 		}
 
-		//====================================================================================================| Members
-
-		private TextObject? textElement;
-		public  TextObject? TextElement {
-			get => textElement;
-			set {
-				textElement = value;
-				needUpdate  = true;
-			}
-		}
-
-		private Sprite? iconElement;
-		public  Sprite? IconElement {
-			get => iconElement;
-			set {
-				iconElement = value;
-				needUpdate  = true;
-			}
-		}
-
-		private float margin = 7f;
-		public  float Margin {
-			get => margin;
-			set {
-				margin     = value;
-				needUpdate = true;
-			}
-		}
-
-		public Action OnClickEvent { get; set; } = () => {};
-
 		//====================================================================================================| Rerender
 
 		private void Rerender() {
@@ -159,22 +231,21 @@ namespace nk.Carcassonne {
 				ElementType == ButtonElementType.BOTH_TEXT_FIRST ||
 				ElementType == ButtonElementType.BOTH_ICON_FIRST
 			) {
-				if (textElement != null) {
+				if (TextElement != null) {
 
-					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (textElement.CharacterSize * 0.55f));	
+					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (TextElement.CharacterSize * 0.55f));	
 
-					if (ElementAlign == ButtonElementAlign.LEFT) {
+					if (ElementAlign == ElementAlign.LEFT) {
 						position.X = Position.X + Margin;
 					}
-					else if (ElementAlign == ButtonElementAlign.MIDDLE) {
-						position.X = Position.X + (Size.X - textElement.GetGlobalBounds().Width) * 0.49f;
+					else if (ElementAlign == ElementAlign.MIDDLE) {
+						position.X = Position.X + (Size.X - TextElement.GetGlobalBounds().Width) * 0.49f;
 					}
-					else if (ElementAlign == ButtonElementAlign.RIGHT) {
-						position.X = Position.X + Size.X - textElement.GetGlobalBounds().Width - Margin;
+					else if (ElementAlign == ElementAlign.RIGHT) {
+						position.X = Position.X + Size.X - TextElement.GetGlobalBounds().Width - Margin;
 					}
 
-					textElement.Position  = position;
-					textElement.FillColor = TextElementColor;
+					TextElement.Position  = position;
 				}
 			}
 
@@ -189,18 +260,18 @@ namespace nk.Carcassonne {
 
 					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (iconElement.GetGlobalBounds().Height / 2));
 
-					if (ElementAlign == ButtonElementAlign.LEFT) {
+					if (ElementAlign == ElementAlign.LEFT) {
 						position.X = Position.X + Margin;
 					}
-					else if (ElementAlign == ButtonElementAlign.MIDDLE) {
+					else if (ElementAlign == ElementAlign.MIDDLE) {
 						position.X = Position.X + (Size.X - iconElement.GetGlobalBounds().Width) * 0.5f;
 					}
-					else if (ElementAlign == ButtonElementAlign.RIGHT) {
+					else if (ElementAlign == ElementAlign.RIGHT) {
 						position.X = Position.X + Size.X - iconElement.GetGlobalBounds().Width - Margin;
 					}
 
 					iconElement.Position = position;
-					iconElement.Color    = IconElementColor;
+					iconElement.Color    = IconElementIdleColor;
 				}
 			}
 		}

@@ -11,6 +11,7 @@ using SFML.System;
 using SFML.Graphics;
 
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace nk.Carcassonne {
 
@@ -26,15 +27,28 @@ namespace nk.Carcassonne {
 		
 		public static RenderWindow Window { get; private set; } = new(new(0, 0), "");
 
-		public static Vector2u   WindowSize { get; private set; } = new(0, 0);
+		public static Vector2u   WindowSize { get; private set; } = new(1600, 900);
 		public static SceneBase  NowScene   { get; private set; } = new StartScene();
 		public static ClientTime ClientTime { get; private set; } = new();
 
 		public static Dictionary<Cursor.CursorType, Cursor> Cursors { get; private set; } = [];
 
 		public static string           Language { get; set; } = "ko";
-		public static IDrawableObject? Clicking { get; set; } = null;
 		public static IDrawableObject? Hovering { get; set; } = null;
+
+		private static IDrawableObject? clicking = null;
+		public  static IDrawableObject? Clicking {
+			get => clicking;
+			set {
+				clicking = value;
+				
+				if (value != null) {
+					LastClicked = value;
+				}
+			}
+		}
+
+		public static IDrawableObject? LastClicked { get; private set; } = null;
 
 		//====================================================================================================| Constructors
 
@@ -63,7 +77,7 @@ namespace nk.Carcassonne {
 		private static void CreateNewWindow(Vector2u _size) {
 			Window.Close();
 
-			WindowSize = new(1600, 900);
+			WindowSize = new(_size.X, _size.Y);
 			
 			Styles style = Styles.Close;
 
@@ -76,6 +90,7 @@ namespace nk.Carcassonne {
 
 		//============================================================| GetHovering
 
+		public readonly static IDrawableObject Background = new EmptyObject();
 		private static IDrawableObject? GetHovering(List<IDrawableObject> objects) {
 			for (int index = objects.Count - 1; index >= 0; index--) {
 				IDrawableObject obj = objects[index];
@@ -100,7 +115,7 @@ namespace nk.Carcassonne {
 				}
 			}
 
-			return null;
+			return Background;
 		}
 
 		//============================================================| Run
@@ -118,8 +133,9 @@ namespace nk.Carcassonne {
 			Clock clock = new();
 
 			while(Window.IsOpen) {
+                Console.WriteLine(LastClicked);
 
-				totalTimeElapsed    = clock.ElapsedTime.AsSeconds();
+                totalTimeElapsed    = clock.ElapsedTime.AsSeconds();
 				deltaTime           = totalTimeElapsed - previousTimeElapsed;
 				previousTimeElapsed = totalTimeElapsed;
 
@@ -127,6 +143,7 @@ namespace nk.Carcassonne {
 				DeltaTime = deltaTime;
 
                 if (totalTimeBeforUpdate >= TimeUntilUpdate) {
+
                     Hovering = GetHovering(NowScene.Objects);
 
                     Window.DispatchEvents();

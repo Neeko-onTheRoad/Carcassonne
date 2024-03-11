@@ -68,20 +68,16 @@ namespace nk.Carcassonne {
 				Title    = st.Connect,
 				Show     = false
 			};
-			connectWindow.AddObject(
-				new TextObject() {
-					DisplayedString = st.Addres,
-					CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
-					Position        = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.025f)
-				}
-			);
-			connectWindow.AddObject(
-				new TextObject() {
-					DisplayedString = st.Port,
-					CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.015f),
-					Position        = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.055f)
-				}
-			);
+			InputBox addres = new() {
+				Position = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.025f)
+			};
+			InputBox port = new InputBox() {
+				Position = connectWindow.Position + new Vector2f(WindowBase.WindowSize.X * 0.025f, WindowBase.WindowSize.X * 0.055f)
+			};
+			addres.DisplayString = st.Addres;
+			port.  DisplayString = st.Port;
+			connectWindow.AddObject(addres);
+			connectWindow.AddObject(port);
 
 			//====================================================================================| Connect Button
 
@@ -93,10 +89,8 @@ namespace nk.Carcassonne {
 				OnClickEvent = () => {
 					connectWindow.ToCenter();
 					connectWindow.Show = true;
-				},
-				FillColor = new(0, 0, 0, 0),
-				OutlineColor = new(255, 255, 255),
-				OutlineThickness = 5f
+				}
+
 			};
 			Objects.Add(connectButton);
 
