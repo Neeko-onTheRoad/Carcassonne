@@ -38,7 +38,7 @@ namespace nk.Carcassonne {
 		private ElementAlign      elementAlign             = ElementAlign.MIDDLE;
 		private TextObject?       textElement              = null;
 		private Sprite?           iconElement              = null;
-		private float             margin                   = WindowBase.WindowSize.X * 0.02f;
+		private float             margin                   = WindowBase.WindowSize.X * .02f;
 
 		public  bool Hovering { get; private set; } = false;
 		private byte Hovered  = 2;
@@ -168,6 +168,7 @@ namespace nk.Carcassonne {
 					Hovered  = 0;
 					Released = 2;
 				}
+
 				if (Released == 1) {
 					FillColor = Colors.LightPurple;
 
@@ -233,13 +234,13 @@ namespace nk.Carcassonne {
 			) {
 				if (TextElement != null) {
 
-					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (TextElement.CharacterSize * 0.55f));	
+					Vector2f position = new(0, Position.Y + (Size.Y / 2) - (TextElement.CharacterSize * .55f));	
 
 					if (ElementAlign == ElementAlign.LEFT) {
 						position.X = Position.X + Margin;
 					}
 					else if (ElementAlign == ElementAlign.MIDDLE) {
-						position.X = Position.X + (Size.X - TextElement.GetGlobalBounds().Width) * 0.49f;
+						position.X = Position.X + (Size.X - TextElement.GetGlobalBounds().Width) * .49f;
 					}
 					else if (ElementAlign == ElementAlign.RIGHT) {
 						position.X = Position.X + Size.X - TextElement.GetGlobalBounds().Width - Margin;
@@ -264,7 +265,7 @@ namespace nk.Carcassonne {
 						position.X = Position.X + Margin;
 					}
 					else if (ElementAlign == ElementAlign.MIDDLE) {
-						position.X = Position.X + (Size.X - iconElement.GetGlobalBounds().Width) * 0.5f;
+						position.X = Position.X + (Size.X - iconElement.GetGlobalBounds().Width) * .5f;
 					}
 					else if (ElementAlign == ElementAlign.RIGHT) {
 						position.X = Position.X + Size.X - iconElement.GetGlobalBounds().Width - Margin;

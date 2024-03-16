@@ -48,7 +48,7 @@ namespace nk.Carcassonne {
 			}
 		}
 
-		public static IDrawableObject? LastClicked { get; private set; } = null;
+		public static IDrawableObject? LastClicked { get; set; } = null;
 
 		//====================================================================================================| Constructors
 
@@ -133,7 +133,6 @@ namespace nk.Carcassonne {
 			Clock clock = new();
 
 			while(Window.IsOpen) {
-                Console.WriteLine(LastClicked);
 
                 totalTimeElapsed    = clock.ElapsedTime.AsSeconds();
 				deltaTime           = totalTimeElapsed - previousTimeElapsed;

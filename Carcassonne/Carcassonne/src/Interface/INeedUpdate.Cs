@@ -1,22 +1,15 @@
 ﻿//====================================================================================================
-// InGame.Cs
+// INeedUpdate.Cs
 // Copyright (C) 2024~ Neeko_onTheRoad
 //----------------------------------------------------------------------------------------------------
 // CC BY-NC
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using SFML.System;
-
 namespace nk.Carcassonne {
-	public class InGameScene() : SceneBase() {
+	public interface INeedUpdate {
+		public bool Updating { get; set; }
 
-		public List<Player>                   Players { get; protected set; } = [];
-		public Dictionary<Vector2i, TileBase> Cards   { get; protected set; } = [];
-
-		public override void InitializeBase() {
-			
-		}
-
+		public void UpdateElement(ClientTime _ct);
 	}
 }

@@ -11,7 +11,7 @@ using SFML.Graphics;
 namespace nk.Carcassonne {
 	public class EmptyScene() : SceneBase() {
 
-		public override void Initialize() {}
+		public override void InitializeBase() {}
 
 	}
 }

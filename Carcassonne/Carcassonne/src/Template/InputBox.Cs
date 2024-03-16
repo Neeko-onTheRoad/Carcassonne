@@ -12,16 +12,34 @@ using SFML.Window;
 
 namespace nk.Carcassonne {
 	
-	public class InputBox : RoundedRectangleShape, IDrawableObject {
+	public class InputBox : RoundedRectangleShape, IDrawableObject, INeedUpdate {
 
 		//====================================================================================================| State, Flags
 
 		public bool GetInput { get; set; } = true;
-		
+		public bool Updating { get; set; } = true;
+
 		public string InputString { get; private set; } = "";
 
 		private byte Hovered  = 2;
 		private byte Released = 0;
+
+		private bool nowCursorShowing = true;
+		private bool cursorDisplay    = true;
+		public  bool CursorDisplay {
+			get => cursorDisplay;
+			set {
+				if (value) CursorBuffer = new();
+				else       CursorBuffer = null;
+
+				cursorDisplay = value;
+			}
+		}
+		private LineObject? CursorBuffer = new();
+
+		private bool Selecting   = false;
+		private uint SelectStart = 0;
+		private uint SelectEnd   = 0;
 
 		private readonly EventHandler<MouseMoveEventArgs>   MouseMovedEvent;
 		private readonly EventHandler<MouseButtonEventArgs> MouseButtonPressedEvent;
@@ -29,18 +47,25 @@ namespace nk.Carcassonne {
 		private readonly EventHandler<TextEventArgs>        TextEnteredEvent;
 
 		private ElementAlign textElementAlign        = ElementAlign.LEFT;
-		private float        margin                  = WindowBase.WindowSize.X * 0.005f;
-		private ColorSF      backgroundIdleColor     = Colors.Transparent(Colors.Black, 100);
-		private ColorSF      backgroundClickingColor = Colors.Transparent(Colors.Black, 50);
-		private ColorSF      textIdleColor           = Colors.GrayIn(75);
+		private float        margin                  = WindowBase.WindowSize.X * .005f;
+		private ColorSF      backgroundIdleColor     = Colors.Transparent(Colors.Black, 50);
+		private ColorSF      backgroundClickingColor = Colors.Transparent(Colors.Black, 100);
+		private ColorSF      textIdleColor           = Colors.GrayIn(25);
 		private ColorSF      textClickingColor       = Colors.GrayIn(50);
 		private ColorSF      inputTextIdleColor      = Colors.GrayIn(25);
 		private ColorSF      inputTextClickingColor  = Colors.White;
 		private ColorSF      outlineIdleColor        = Colors.LightPurple;
 		private ColorSF      outlineClickingColor    = Colors.Purple;
+		private ColorSF      cursorColor             = Colors.LightPurple;
+		private float        cursorBlinkingDelay     = .5f;
 		private TextObject   textElement             = new();
 		private TextObject   inputTextStyle          = new();
 		private TextObject   textDisplayBuffer       = new();
+
+		public InputBox? Next     { get; set; } = null;
+		public InputBox? Previous { get; set; } = null;
+
+		
 
 		//====================================================================================================| Propertys
 
@@ -124,6 +149,20 @@ namespace nk.Carcassonne {
 			}
 		}
 
+		public ColorSF CursorColor {
+			get => cursorColor;
+			set {
+				cursorColor = value;
+			}
+		}
+
+		public float CursorBlinkingDelay {
+			get => cursorBlinkingDelay;
+			set {
+				cursorBlinkingDelay = value;
+			}
+		}
+
 		public TextObject TextElement {
 			get => textElement;
 			set {
@@ -137,6 +176,8 @@ namespace nk.Carcassonne {
 			set {
 				inputTextStyle = value;
 				needUpdate     = true;
+
+				UpdateCursorLocation();
 			}
 		}
 
@@ -147,6 +188,23 @@ namespace nk.Carcassonne {
 			}
 		}
 
+		//====================================================================================================| Mecro Functions
+
+		private void UpdateCursorLocation() {
+			if (CursorDisplay && CursorBuffer != null) {
+				CursorBuffer.Point1 = new(new(
+					TextElement.GetGlobalBounds().Left +
+					TextElement.GetGlobalBounds().Width,
+					TextElement.GetGlobalBounds().Top
+				), CursorColor);
+				CursorBuffer.Point2 = new(new(
+					CursorBuffer.Point1.Position.X,
+					TextElement.GetGlobalBounds().Top +
+					TextElement.GetGlobalBounds().Height
+				), CursorColor);
+			}
+		}
+
 		//====================================================================================================| Constructor
 
 		public InputBox() {
@@ -154,13 +212,13 @@ namespace nk.Carcassonne {
 			CursorChanging   = true;
 			FillColor        = BackgroundIdleColor;
 			OutlineColor     = OutlineIdleColor;
-			OutlineThickness = WindowBase.WindowSize.X * 0.001f;
+			OutlineThickness = WindowBase.WindowSize.X * .001f;
 
-			textElement.CharacterSize = (uint)(WindowBase.WindowSize.X * 0.01f);
+			textElement.CharacterSize = (uint)(WindowBase.WindowSize.X * .01f);
 			textElement.FillColor     = TextIdleColor;
 			textElement.Font          = Res.Fonts.Normal;
 
-			inputTextStyle.CharacterSize = (uint)(WindowBase.WindowSize.X * 0.01f);
+			inputTextStyle.CharacterSize = (uint)(WindowBase.WindowSize.X * .01f);
 
 			MouseMovedEvent = (_sender, _event) => {
 				if (!Show) return;
@@ -203,17 +261,38 @@ namespace nk.Carcassonne {
 			};
 
 			TextEnteredEvent = (_sender, _event) => {
-				if (!Show || Ignore) return;
 
-				if (WindowBase.LastClicked == this) {
-					if (_event.Unicode == "\b") {
+				if (!Show || Ignore) return;
+                Console.WriteLine((int)_event.Unicode[0]);
+
+                if (WindowBase.LastClicked == this) {
+					char keyCode = _event.Unicode[0];
+                    if (keyCode == Ascii.BS) {
 						if (InputString.Length > 0) {
 							InputString = InputString[..^1];
 						}
-						return;
 					}
 
-					InputString += _event.Unicode;
+					else if (keyCode == Ascii.DEL) {
+						InputString = "";
+					}
+
+					else if (keyCode == Ascii.ESC || _event.Unicode[0] == Ascii.CR) {
+						WindowBase.LastClicked = WindowBase.Background;
+					}
+
+					else if (keyCode == Ascii.HT) {
+                        if (Keyboard.IsKeyPressed(Keyboard.Key.LShift)) {
+							if (Previous != null && Previous.Show) {
+								WindowBase.Clicking = Previous;
+							}
+						}
+                        else if (Next != null && Next.Show) {
+							WindowBase.Clicking = Next;
+						}
+					}
+
+					else InputString += _event.Unicode;
                 }
 			};
 
@@ -236,7 +315,7 @@ namespace nk.Carcassonne {
 
 		private void Rerender() {
 
-			TextObject? textElementTemp = null;
+			TextObject? textElementTemp;
 
 			if (InputString == "") {
 				textElementTemp = TextElement;
@@ -247,13 +326,13 @@ namespace nk.Carcassonne {
 			}
 
 			if (textElementTemp != null) {
-				Vector2f position = new(0, Position.Y + (Size.Y / 2) - (textElementTemp.CharacterSize * 0.55f));
+				Vector2f position = new(0, Position.Y + (Size.Y / 2) - (textElementTemp.CharacterSize * .55f));
 
 				if (TextElementAlign == ElementAlign.LEFT) {
 					position.X = Position.X + Margin;
 				}
 				else if (TextElementAlign == ElementAlign.MIDDLE) {
-					position.X = Position.X + (Size.X - textElementTemp.GetGlobalBounds().Width * 0.49f);
+					position.X = Position.X + (Size.X - textElementTemp.GetGlobalBounds().Width * .49f);
 				}
 				else if (TextElementAlign == ElementAlign.RIGHT) {
 					position.X = Position.X + Size.X - textElementTemp.GetGlobalBounds().Width - Margin;
@@ -266,6 +345,19 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Override
 
+		private float CursorBlinkingBuffer = 0f;
+		public void UpdateElement(ClientTime _ct) {
+			if (!Show || WindowBase.LastClicked != this) return;
+		
+			CursorBlinkingBuffer += _ct.DeltaTime;
+
+            if (CursorBlinkingDelay <= CursorBlinkingBuffer) {
+				CursorBlinkingBuffer -= CursorBlinkingDelay;
+				nowCursorShowing = !nowCursorShowing;
+                Console.WriteLine(nowCursorShowing);
+            }
+		}
+
 		public new void Draw(RenderTarget _target, RenderStates _state) {
 			if (!Show) return;
 		
@@ -277,6 +369,10 @@ namespace nk.Carcassonne {
 
 			_target.Draw(textDisplayBuffer);
 			
+			if (WindowBase.Clicking == this && nowCursorShowing) {
+                Console.WriteLine("aa");
+                _target.Draw(CursorBuffer, _state);
+			}
 		}
 	}
 }

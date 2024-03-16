@@ -12,7 +12,7 @@ namespace nk.Carcassonne {
 	public interface IMultyDrawableObject : IDrawableObject {
 
 		public List<Tuple<IDrawableObject, Vector2f>> Objects      { get; protected set; }
-		public List<IDrawableObject>        AddedObjects { get; protected set; }
+		public List<IDrawableObject>                  AddedObjects { get; protected set; }
 
 		public void AddObject(IDrawableObject _object);
 	}

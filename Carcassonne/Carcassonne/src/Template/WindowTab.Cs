@@ -18,7 +18,17 @@ namespace nk.Carcassonne {
 
 		private bool needUpdate = true;
 
-		public bool Show           { get; set; } = true;
+		private bool show = true;
+		public  bool Show {
+			get => show;
+			set {
+				show = value;
+				foreach (var i in Objects) {
+					i.Item1.Show = value;
+				}
+			}
+		}
+
 		public bool Ignore         { get; set; } = false;
 		public bool Movement       { get; set; } = true;
 		public bool Popupable      { get; set; } = true;
@@ -34,7 +44,7 @@ namespace nk.Carcassonne {
 		public bool	 Draging	  { get; set; } = false;
 		public Vector2f DragStartPos { get; set; } = new(0f, 0f);
 
-		public List<Tuple<IDrawableObject, Vector2f>> Objects	     { get; set; } = [];
+		public List<Tuple<IDrawableObject, Vector2f>> Objects      { get; set; } = [];
 		public List<IDrawableObject>                  AddedObjects { get; set; } = [];
 
 		//====================================================================================================| Normal Shapes
@@ -94,16 +104,16 @@ namespace nk.Carcassonne {
 			Background ??= new();
 
 			Background.Position = Position + new Vector2f(
-				WindowBase.WindowSize.X * 0.001f,
-				WindowBase.WindowSize.X * 0.021f
+				WindowBase.WindowSize.X * .001f,
+				WindowBase.WindowSize.X * .021f
 			);
 			Background.Size = Size - new Vector2f (
-				WindowBase.WindowSize.X * 0.002f,
-				WindowBase.WindowSize.X * 0.022f
+				WindowBase.WindowSize.X * .002f,
+				WindowBase.WindowSize.X * .022f
 			);
 			Background.FillColor        = BackgroundColor;
 			Background.OutlineColor     = BorderColor;
-			Background.OutlineThickness = WindowBase.WindowSize.X * 0.001f;
+			Background.OutlineThickness = WindowBase.WindowSize.X * .001f;
 			AddedObjects.Add(Background);
 
 			//============================================================| Titlebar
@@ -111,7 +121,7 @@ namespace nk.Carcassonne {
 			TitleBar ??= new();
 
 			TitleBar.Position	    = Position;
-			TitleBar.Size		    = new(Size.X, WindowBase.WindowSize.X * 0.02f);
+			TitleBar.Size		    = new(Size.X, WindowBase.WindowSize.X * .02f);
 			TitleBar.FillColor      = BorderColor;
 			TitleBar.CursorChanging = true;
 			AddedObjects.Add(TitleBar);
@@ -122,11 +132,11 @@ namespace nk.Carcassonne {
 
 			TitleStr.DisplayedString = Title;
 			TitleStr.Font            = Res.Fonts.Normal;
-			TitleStr.CharacterSize   = (uint)(WindowBase.WindowSize.X * 0.0125f);
+			TitleStr.CharacterSize   = (uint)(WindowBase.WindowSize.X * .0125f);
 			TitleStr.Ignore		     = true;
 			TitleStr.Position        = Position + new Vector2f(
-				WindowBase.WindowSize.X * 0.005f,
-				(WindowBase.WindowSize.X * 0.01f) - (TitleStr.GetGlobalBounds().Height * 0.65f)
+				WindowBase.WindowSize.X * .005f,
+				(WindowBase.WindowSize.X * .01f) - (TitleStr.GetGlobalBounds().Height * .65f)
 			);
 			AddedObjects.Add(TitleStr);
 
@@ -135,24 +145,24 @@ namespace nk.Carcassonne {
 			if (Closeable) {
 				CloseButton ??= new();
 
-				CloseButton.Size	     = new(WindowBase.WindowSize.X * 0.017f, WindowBase.WindowSize.X * 0.017f);
-				CloseButton.Position     = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * 0.02f, WindowBase.WindowSize.X * 0.002f);
-				CloseButton.Radius	     = WindowBase.WindowSize.X * 0.002f;
+				CloseButton.Size	     = new(WindowBase.WindowSize.X * .017f, WindowBase.WindowSize.X * .017f);
+				CloseButton.Position     = Position + new Vector2f(Size.X - WindowBase.WindowSize.X * .02f, WindowBase.WindowSize.X * .002f);
+				CloseButton.Radius	     = WindowBase.WindowSize.X * .002f;
 				CloseButton.PointCount   = 1;
 				CloseButton.ElementType  = ButtonElementType.ICON;
 				CloseButton.ElementAlign = ElementAlign.MIDDLE;
 				CloseButton.OnClickEvent = () => { Show = false; };
 				CloseButton.IconElement  = new(Res.Icons.X);
 				CloseButton.IconElement.Scale = new(
-					WindowBase.WindowSize.X * 0.01f / CloseButton.IconElement.GetGlobalBounds().Width,
-					WindowBase.WindowSize.X * 0.01f / CloseButton.IconElement.GetGlobalBounds().Height
+					WindowBase.WindowSize.X * .01f / CloseButton.IconElement.GetGlobalBounds().Width,
+					WindowBase.WindowSize.X * .01f / CloseButton.IconElement.GetGlobalBounds().Height
 				);
 				AddedObjects.Add(CloseButton);
 			}
 
 			//============================================================| Other Objects
 
-			if (Movement) Objects.ForEach(i => i.Item1.Position = i.Item2 + Position + new Vector2f(0f, WindowBase.WindowSize.X * 0.02f));
+			if (Movement) Objects.ForEach(i => i.Item1.Position = i.Item2 + Position + new Vector2f(0f, WindowBase.WindowSize.X * .02f));
             Objects.ForEach(i => AddedObjects.Add(i.Item1));
         }
 
@@ -241,7 +251,7 @@ namespace nk.Carcassonne {
 
 		public void ToCenter() {
 			Position = new (
-				WindowBase.WindowSize.X / 2f - Size.X / 2f,
+				WindowBase	.WindowSize.X / 2f - Size.X / 2f,
 				WindowBase.WindowSize.Y / 2f - Size.Y / 2f
 			);
 		}
@@ -249,6 +259,7 @@ namespace nk.Carcassonne {
 		//====================================================================================================| Override
 
 		public void AddObject(IDrawableObject _object) {
+			if (!Show) _object.Show = false;
 			Objects.Add(new(_object, _object.Position));
         }
 

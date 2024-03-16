@@ -8,6 +8,7 @@
 
 using SFML.Graphics;
 using SFML.Window;
+using System.Threading.Channels;
 
 namespace nk.Carcassonne {
 	public abstract class SceneBase : Drawable {
@@ -15,7 +16,18 @@ namespace nk.Carcassonne {
 		public List<IDrawableObject>    Objects { get; protected set; } = [];
 		public List<Action<ClientTime>> Updates { get; protected set; } = [];
 		
-		public abstract void Initialize();
+		public void Initialize() {
+            InitializeBase();
+
+			Alg.Tree.DFT(Objects, i => {
+				if (i is INeedUpdate i_) {
+					Updates.Add(i_.UpdateElement);
+				}
+			});
+
+		}
+
+		public abstract void InitializeBase();
 
 		public void Update(ClientTime _clientTime) {
 			Updates.ForEach(i => i(_clientTime));
@@ -40,6 +52,8 @@ namespace nk.Carcassonne {
 		}
 
 		~SceneBase() {
+			Updates.Clear();
+
             WindowBase.Window.Closed              -= CloseButtonEvent;
 			WindowBase.Window.MouseMoved          -= MouseMovedEvent;
 			WindowBase.Window.MouseButtonPressed  -= MouseButtonPressedEvent;

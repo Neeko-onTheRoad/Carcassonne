@@ -1,22 +1,18 @@
 ﻿//====================================================================================================
-// InGame.Cs
+// ASCII.Cs
 // Copyright (C) 2024~ Neeko_onTheRoad
 //----------------------------------------------------------------------------------------------------
 // CC BY-NC
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
-using SFML.System;
-
 namespace nk.Carcassonne {
-	public class InGameScene() : SceneBase() {
-
-		public List<Player>                   Players { get; protected set; } = [];
-		public Dictionary<Vector2i, TileBase> Cards   { get; protected set; } = [];
-
-		public override void InitializeBase() {
-			
-		}
-
+	public static class Ascii {
+		public static readonly char SOH = (char)001;
+		public static readonly char  BS = (char)008;
+		public static readonly char  HT = (char)009;
+		public static readonly char  CR = (char)013;
+		public static readonly char ESC = (char)027;
+		public static readonly char DEL = (char)127;
 	}
 }
