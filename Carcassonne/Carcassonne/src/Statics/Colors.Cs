@@ -6,6 +6,8 @@
 // https://creativecommons.org/licenses/by-nc/4.0/deed.en
 //====================================================================================================
 
+using System.Data;
+
 namespace nk.Carcassonne {
 	public class Colors {
 		public static ColorSF Transparent(ColorSF _color, byte _percent) {
@@ -24,9 +26,15 @@ namespace nk.Carcassonne {
 		public readonly static ColorSF Gray      = new(25 , 25 , 25 );
 		public readonly static ColorSF Black     = new(0  , 0  , 0  );
 
-		public readonly static ColorSF LightPurple = new(120, 108, 198);
-		public readonly static ColorSF Purple      = new(101, 53,  136);
-		public readonly static ColorSF Yellow      = new(255, 247, 0  );
+		public readonly static ColorSF LightPurple  = new(120, 108, 198);
+		public readonly static ColorSF Purple       = new(101, 53,  136);
+		public readonly static ColorSF Yellow       = new(255, 247, 0  );
+		public readonly static ColorSF Red_True     = new(255, 0  , 0  );
+		public readonly static ColorSF Green_True   = new(0  , 255, 0  );
+		public readonly static ColorSF Blue_True    = new(0  , 0  , 255);
+		public readonly static ColorSF Yellow_True  = new(255, 255, 0  );
+		public readonly static ColorSF Magenta_True = new(255, 0  , 255);
+		public readonly static ColorSF Cyan_True    = new(0  , 255, 255);
 
 		public readonly static ColorSF TransparentBlack = new(0  , 0  , 0  , 150);
 	}

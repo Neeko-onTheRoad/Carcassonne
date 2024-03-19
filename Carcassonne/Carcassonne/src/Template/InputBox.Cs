@@ -65,8 +65,6 @@ namespace nk.Carcassonne {
 		public InputBox? Next     { get; set; } = null;
 		public InputBox? Previous { get; set; } = null;
 
-		
-
 		//====================================================================================================| Propertys
 
 		public ElementAlign TextElementAlign {
@@ -192,16 +190,22 @@ namespace nk.Carcassonne {
 
 		private void UpdateCursorLocation() {
 			if (CursorDisplay && CursorBuffer != null) {
-				CursorBuffer.Point1 = new(new(
-					TextElement.GetGlobalBounds().Left +
-					TextElement.GetGlobalBounds().Width,
-					TextElement.GetGlobalBounds().Top
-				), CursorColor);
-				CursorBuffer.Point2 = new(new(
-					CursorBuffer.Point1.Position.X,
-					TextElement.GetGlobalBounds().Top +
-					TextElement.GetGlobalBounds().Height
-				), CursorColor);
+				if (textElementTemp != null) {
+					CursorBuffer.Point1 = new(new(
+						textElementTemp.GetGlobalBounds().Left +
+						textElementTemp.GetGlobalBounds().Width +
+						WindowBase.WindowSize.X * .002f,
+						Position.Y + WindowBase.WindowSize.X * .004f
+					), CursorColor);
+					CursorBuffer.Point2 = new(new(
+						CursorBuffer.Point1.Position.X,
+						Position.Y + Size.Y - WindowBase.WindowSize.X * .004f
+
+					), CursorColor);
+				}
+				else {
+					CursorBuffer = null;
+				}
 			}
 		}
 
@@ -267,28 +271,38 @@ namespace nk.Carcassonne {
 
                 if (WindowBase.LastClicked == this) {
 					char keyCode = _event.Unicode[0];
-                    if (keyCode == Ascii.BS) {
-						if (InputString.Length > 0) {
-							InputString = InputString[..^1];
+
+					if (keyCode < 0x20) {
+						if (keyCode == Ascii.BS) {
+							if (InputString.Length > 0) {
+								InputString = InputString[..^1];
+							}
+						}
+
+						else if (keyCode == Ascii.ESC || _event.Unicode[0] == Ascii.CR) {
+							WindowBase.LastClicked = WindowBase.Background;
+						}
+
+						else if (keyCode == Ascii.HT) {
+							if (Keyboard.IsKeyPressed(Keyboard.Key.LShift)) {
+								if (Previous != null && Previous.Show) {
+									WindowBase.Clicking = Previous;
+								}
+							}
+							else if (Next != null && Next.Show) {
+								WindowBase.Clicking = Next;
+							}
 						}
 					}
 
 					else if (keyCode == Ascii.DEL) {
-						InputString = "";
-					}
-
-					else if (keyCode == Ascii.ESC || _event.Unicode[0] == Ascii.CR) {
-						WindowBase.LastClicked = WindowBase.Background;
-					}
-
-					else if (keyCode == Ascii.HT) {
-                        if (Keyboard.IsKeyPressed(Keyboard.Key.LShift)) {
-							if (Previous != null && Previous.Show) {
-								WindowBase.Clicking = Previous;
+						for (int i = InputString.Length - 1; i >= 0; i--) {
+							if (
+								InputString[i] == ' ' ||
+								InputString[i] == '.'
+							) {
+								
 							}
-						}
-                        else if (Next != null && Next.Show) {
-							WindowBase.Clicking = Next;
 						}
 					}
 
@@ -313,9 +327,8 @@ namespace nk.Carcassonne {
 
 		//====================================================================================================| Rerender
 
+		private TextObject? textElementTemp;
 		private void Rerender() {
-
-			TextObject? textElementTemp;
 
 			if (InputString == "") {
 				textElementTemp = TextElement;
@@ -341,6 +354,9 @@ namespace nk.Carcassonne {
 				textElementTemp.Position = position;
 				textDisplayBuffer = textElementTemp;
 			}
+
+			
+			UpdateCursorLocation();
 		}
 
 		//====================================================================================================| Override
@@ -369,8 +385,7 @@ namespace nk.Carcassonne {
 
 			_target.Draw(textDisplayBuffer);
 			
-			if (WindowBase.Clicking == this && nowCursorShowing) {
-                Console.WriteLine("aa");
+			if (WindowBase.LastClicked == this && nowCursorShowing) {
                 _target.Draw(CursorBuffer, _state);
 			}
 		}

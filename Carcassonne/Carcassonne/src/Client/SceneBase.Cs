@@ -8,7 +8,6 @@
 
 using SFML.Graphics;
 using SFML.Window;
-using System.Threading.Channels;
 
 namespace nk.Carcassonne {
 	public abstract class SceneBase : Drawable {

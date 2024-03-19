@@ -9,7 +9,7 @@
 namespace nk.Carcassonne {
 	public static class Program {
 		public static void Main() {
-			WindowBase.Init("Carcassonne", "V ..1");
+			WindowBase.Init("Carcassonne", "V alpha 0.0.1");
 			WindowBase.Run();
 		}
 	}

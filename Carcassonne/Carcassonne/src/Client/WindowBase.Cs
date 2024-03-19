@@ -11,12 +11,10 @@ using SFML.System;
 using SFML.Graphics;
 
 using System.Runtime.InteropServices;
-using System.ComponentModel;
 
 namespace nk.Carcassonne {
-
 	public static partial class WindowBase {
-
+		
 		//====================================================================================================| Member Variables
 		
 		public static string WindowTitle     { get; private set; } = "Carccasson";
@@ -49,6 +47,35 @@ namespace nk.Carcassonne {
 		}
 
 		public static IDrawableObject? LastClicked { get; set; } = null;
+
+		//====================================================================================================| Status Counters
+
+		private static TextObject? fpsCounter = null;
+
+		//====================================================================================================| Status Counter Propertys
+
+		private static bool ShowFpsCounter { get; set; } = true;
+		public static float? FpsCounter {
+			get {
+				if (fpsCounter == null) return null;
+				else return Convert.ToUInt16(fpsCounter.DisplayedString[0..^2]);
+			}
+			set {
+				fpsCounter ??= new() {
+					Position      = new(WindowSize.X * .005f, WindowSize.X * .005f),
+					Font          = Res.Fonts.Normal,
+					CharacterSize = (uint)(WindowSize.X * .01f),
+					FillColor     = Colors.Green_True
+				};
+
+				if (value != null) {
+					fpsCounter.DisplayedString = $"FPS : {value}";
+				}
+				else {
+					fpsCounter.DisplayedString = "FPS : N/A";
+				}
+			}
+		}
 
 		//====================================================================================================| Constructors
 
@@ -85,6 +112,19 @@ namespace nk.Carcassonne {
 
 			Window = new RenderWindow(new VideoMode(WindowSize.X, WindowSize.Y), WindowTitle, style, setting);
 
+			Window.MouseButtonPressed += (_sender, _event) => {
+				if (_event.Button == Mouse.Button.Left) {
+					if (Hovering == null) {
+						LastClicked = Background;
+						return;
+					}
+			
+					if (Hovering.Ignore) {
+						LastClicked = null;
+					}
+				}
+			};
+
 			ChangeScene(NowScene);
 		}
 
@@ -96,22 +136,25 @@ namespace nk.Carcassonne {
 				IDrawableObject obj = objects[index];
 
 				if (MouseListener.IsHovering(obj)) {
-					IDrawableObject? hovering = obj.Ignore ? null : obj;
+					IDrawableObject? hovering;
+					if (obj.Ignore) {
+						hovering = null;
+					}
+					else {
+						hovering = obj;
+					}
 
 					while (hovering is IMultyDrawableObject @object) {
 						for (int jndex = @object.AddedObjects.Count - 1; jndex >= 0; jndex--) {
 							IDrawableObject jovering = @object.AddedObjects[jndex];
 
 							if (MouseListener.IsHovering(jovering)) {
-                                if (!jovering.Ignore) {
-									hovering = jovering;
-									break;
-								}
+                                if (!jovering.Ignore) { hovering = jovering; break; }
 							}
 						}
 					}
 
-					return hovering;
+					if (hovering != null) return hovering;
 				}
 			}
 
@@ -150,13 +193,20 @@ namespace nk.Carcassonne {
 					ClientTime.Update(totalTimeBeforUpdate, clock.ElapsedTime.AsSeconds());
 					totalTimeBeforUpdate = 0f;
 
-					NowScene.Update(ClientTime);
+					NowScene.Update(ClientTime); 
+					FpsCounter = (float)Math.Round(1 / ClientTime.DeltaTime, 1);      
 
 					Window.Clear(Colors.Gray);
 					Window.Draw(NowScene);
+
+					if (ShowFpsCounter) {
+						Window.Draw(fpsCounter);
+					}
+
 					Window.Display();
 				}
-			}
+                //Console.WriteLine($"{LastClicked}, {Clicking}, {Hovering}");
+            }
 		}
 	}
 

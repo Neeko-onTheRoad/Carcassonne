@@ -9,6 +9,7 @@
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using System.Globalization;
 
 namespace nk.Carcassonne {
 
@@ -41,7 +42,7 @@ namespace nk.Carcassonne {
 		private Vector2f size            = new(100f, 100f);
 		private Vector2f position        = new(0f, 0f);
 
-		public bool	 Draging	  { get; set; } = false;
+		public bool	    Draging      { get; set; } = false;
 		public Vector2f DragStartPos { get; set; } = new(0f, 0f);
 
 		public List<Tuple<IDrawableObject, Vector2f>> Objects      { get; set; } = [];
@@ -251,7 +252,7 @@ namespace nk.Carcassonne {
 
 		public void ToCenter() {
 			Position = new (
-				WindowBase	.WindowSize.X / 2f - Size.X / 2f,
+				WindowBase.WindowSize.X / 2f - Size.X / 2f,
 				WindowBase.WindowSize.Y / 2f - Size.Y / 2f
 			);
 		}
